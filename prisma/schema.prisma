@@ -1,0 +1,332 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["typedsql"]
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  PHARMACY
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  username      String?   @unique
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  role    UserRole @default(USER)
+  reviews Review[]
+
+  orders            Order[]
+  prescriptions     Prescription[]
+  pushSubscriptions PushSubscription[]
+  address           UserAddress[]
+
+  invoices Invoice[]
+
+  pharmacy Pharmacy?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PushSubscription {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  userAgent String
+  endPoint  String
+  p256dh    String
+  auth      String
+
+  status    SubscriptionStatus @default(ACTIVE) // Enum for subscription status
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+}
+
+model Account {
+  id                       String  @id @default(cuid())
+  userId                   String  @unique
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String? @db.Text
+  access_token             String? @db.Text
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.Text
+  session_state            String?
+  refresh_token_expires_in Int?
+  user                     User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model UserAddress {
+  id           Int    @id @default(autoincrement())
+  municipality String
+  ward         String
+  town         String
+  district     String
+  state        String
+
+  location UserLocation?
+  orders   Order[]
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserLocation {
+  id Int @id @default(autoincrement())
+
+  latitude  Float
+  longitude Float
+
+  addressId Int         @unique
+  address   UserAddress @relation(fields: [addressId], references: [id])
+
+  @@index([latitude, longitude], name: "location_index")
+}
+
+model PharmacyAddress {
+  id           Int    @id @default(autoincrement())
+  municipality String
+  ward         String
+  town         String
+  district     String
+  state        String
+
+  pharmacy Pharmacy?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Pharmacy {
+  id          Int        @id @default(autoincrement())
+  name        String
+  slug        String     @unique
+  images      Media[]
+  description String
+  reviews     Review[]
+  orders      Order[]
+  invoices    Invoice[]
+  medicines   Medicine[]
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  addressId Int             @unique
+  address   PharmacyAddress @relation(fields: [addressId], references: [id])
+
+  locationId Int              @unique
+  location   PharmacyLocation @relation(fields: [locationId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PharmacyLocation {
+  id Int @id @default(autoincrement())
+
+  latitude  Float
+  longitude Float
+
+  pharmacy Pharmacy?
+
+  @@index([latitude, longitude], name: "location_index")
+}
+
+model Review {
+  id Int @id @default(autoincrement())
+
+  rating  Int     @default(5)
+  comment String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  pharmacyId Int
+  pharmacy   Pharmacy @relation(fields: [pharmacyId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+
+  description String?
+
+  status OrderStatus @default(PRESCRIPTION_UNDER_REVIEW)
+
+  prescriptionId Int
+  prescription   Prescription @relation(fields: [prescriptionId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  userAddressId Int
+  userAddress   UserAddress @relation(references: [id], fields: [userAddressId])
+
+  invoiceId Int?     @unique
+  invoice   Invoice? @relation(fields: [invoiceId], references: [id])
+
+  pharmacySlug String
+  pharmacy     Pharmacy @relation(fields: [pharmacySlug], references: [slug])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Invoice {
+  id Int @id @default(autoincrement())
+
+  paymentMethod PaymentMethod @default(UNPAID)
+  paymentStatus PaymentStatus @default(PENDING)
+
+  subTotal      Float
+  shippingPrice Float
+  tax           Float
+  total         Float
+
+  pharmacyId Int
+  pharmacy   Pharmacy @relation(fields: [pharmacyId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  order Order?
+
+  medicines Medicine[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Medicine {
+  id Int @id @default(autoincrement())
+
+  pharmacyId Int
+  pharmacy   Pharmacy @relation(fields: [pharmacyId], references: [id])
+
+  name     String
+  quantity Int
+  price    Float
+  dose     String
+  total    Float
+
+  invoices Invoice[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Prescription {
+  id          Int     @id @default(autoincrement())
+  label       String
+  description String?
+  images      Media[]
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders Order[]
+
+  @@index([userId])
+}
+
+model Media {
+  id Int @id @default(autoincrement())
+
+  image       String
+  altText     String?
+  title       String?
+  caption     String?
+  description String?
+
+  pharmacyId Int?
+  pharmacy   Pharmacy? @relation(fields: [pharmacyId], references: [id])
+
+  prescriptionId Int?
+  prescription   Prescription? @relation(fields: [prescriptionId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+}
+
+enum OrderStatus {
+  PRESCRIPTION_UNDER_REVIEW
+  INVOICE_PROVIDED
+  ORDER_CONFIRMED
+  OUT_OF_STOCK
+  CANCELLED_BY_USER
+  SHIPPED
+  DELIVERED
+  RETURN_REQUESTED
+  RETURNED
+  COMPLETED
+}
+
+enum PaymentMethod {
+  UNPAID
+  ESEWA
+  CASH_ON_DELIVERY
+}
+
+enum PaymentStatus {
+  UNPAID
+  PENDING
+  PAID
+  CANCLED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  REVOKED
+}
