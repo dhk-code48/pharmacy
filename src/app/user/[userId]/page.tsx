@@ -9,6 +9,7 @@ import findNearestPharmacies from "@/actions/pharmacy/findNearestPharmacy";
 import NearestPharmaciesCard from "./_components/NearestPharmacy";
 import PrescriptionUploadCard from "@/components/forms/order/PrescriptionUploadCard";
 import OrderConfirmationDialog from "@/components/forms/order/OrderConfirmDialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface PageProps {
   params: {
@@ -51,7 +52,7 @@ export default function UserDashboard({ params }: PageProps) {
   if (!isMounted) return null;
 
   return (
-    <div className="space-y-5 min-h-screen overflow-auto">
+    <ScrollArea className="space-y-5 min-h-screen overflow-auto">
       <AppBreadcrumb items={[{ href: "#", label: "Dashboard" }]} />
       <div className="gap-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         <NearestPharmaciesCard
@@ -81,7 +82,7 @@ export default function UserDashboard({ params }: PageProps) {
         pharmacyName={nearestPharmacies?.[0]?.name}
         userId={params.userId}
       />
-    </div>
+    </ScrollArea>
   );
 }
 
