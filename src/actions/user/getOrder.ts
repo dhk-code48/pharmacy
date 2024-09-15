@@ -12,6 +12,7 @@ export default async function getUserOrder({ id }: { id: number }) {
       id,
     },
     include: {
+      user: true,
       invoice: {
         include: {
           medicines: true,
@@ -20,13 +21,6 @@ export default async function getUserOrder({ id }: { id: number }) {
       pharmacy: {
         include: {
           address: true,
-        },
-        select: {
-          user: {
-            select: {
-              phoneNumber: true,
-            },
-          },
         },
       },
       prescription: {

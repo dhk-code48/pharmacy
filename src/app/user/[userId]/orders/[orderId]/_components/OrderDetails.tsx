@@ -28,7 +28,7 @@ const OrderDetails = ({ order }: { order: UserOrder }) => (
         </div>
         <div>
           <Label>Pharmacy Contact</Label>
-          <p>{order.pharmacy.user.phoneNumber}</p>
+          <p>{order.user.phoneNumber}</p>
         </div>
         <div>
           <Label>Pharmacy Address</Label>
