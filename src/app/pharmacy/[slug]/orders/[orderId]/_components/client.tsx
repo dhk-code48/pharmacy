@@ -77,7 +77,16 @@ export default function PharmacyOrderClient({ order }: { order: PharmacyOrder })
           <OrderDetails order={order} />
         </TabsContent>
 
-        <TabsContent value="invoice">{order.invoice && <InvoiceUi invoice={order.invoice} order={order} pharmacy={order.pharmacy} />}</TabsContent>
+        <TabsContent value="invoice">
+          {order.invoice ? (
+            <InvoiceUi invoice={order.invoice} order={order} pharmacy={order.pharmacy} />
+          ) : (
+            <>
+              <p className="italic text-muted-foreground text-center">Invoice Not Provided Yet!!</p>
+              <InvoiceForm orderId={order.id} pharmacyId={order.pharmacy.id} prescription={order.prescription} triggerClassName={buttonVariants()} />
+            </>
+          )}
+        </TabsContent>
         <TabsContent value="prescription">
           <OrderPrescription prescription={order.prescription} />
         </TabsContent>
