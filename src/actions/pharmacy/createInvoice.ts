@@ -81,7 +81,7 @@ export default async function createInvoice(values: InvoiceFormValues, pharmacyI
   sendNotification(customerId, {
     message: `Dear, user invoice is provided for O-${orderId}`,
     title: `Click to view more`,
-    url: `https://localhost:3000/user/${customerId}/orders/${orderId}`,
+    url: `${process.env.PUBLIC_URL || "https://localhost:3000"}/user/${customerId}/orders/${orderId}`,
     icon: "/icons/order.png",
   });
 

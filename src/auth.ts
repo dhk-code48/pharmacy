@@ -30,6 +30,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         session.user.name = token.name;
+        session.user.phoneNumber = token.phoneNumber;
         session.user.image = token.picture;
       }
 
@@ -47,6 +48,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       token.email = dbUser.email;
       token.picture = dbUser.image;
       token.role = dbUser.role;
+      token.phoneNumber = dbUser.phoneNumber;
       token.pharmacyId = dbUser.pharmacy?.slug;
 
       return token;

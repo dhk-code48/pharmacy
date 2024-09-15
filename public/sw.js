@@ -19,6 +19,6 @@ self.addEventListener("notificationclick", function (event) {
   console.log("Notification click received.");
   event.notification.close();
 
-  const targetUrl = event.notification.data?.url || "/";
+  const targetUrl = event?.data?.json()?.url || "/";
   event.waitUntil(clients.openWindow(targetUrl));
 });

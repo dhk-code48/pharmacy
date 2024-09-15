@@ -27,6 +27,7 @@ export default async function createPrescription(
       state,
       town,
       ward,
+      district,
       userId: session.user.id,
     },
   });
@@ -87,6 +88,7 @@ export default async function createPrescription(
   sendNotification(pharmacyOwner, {
     message: `Hey, a new order has been requested from ${session.user.name}`,
     title: `New Order From Request`,
+    url: `${process.env.PUBLIC_URL || "https://localhost:3000"}/pharmacy/${pharmacyOwner}/orders/${order.orders[0].id}`,
     icon: "/icons/order.png",
   });
 

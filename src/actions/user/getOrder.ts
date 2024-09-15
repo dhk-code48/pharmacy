@@ -21,6 +21,13 @@ export default async function getUserOrder({ id }: { id: number }) {
         include: {
           address: true,
         },
+        select: {
+          user: {
+            select: {
+              phoneNumber: true,
+            },
+          },
+        },
       },
       prescription: {
         include: {

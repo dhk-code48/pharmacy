@@ -6,12 +6,14 @@ import { User as PrismaUser } from "@prisma/client";
 export type ExtendedUser = User & {
   role: UserRole;
   pharmacyId: PrismaUser["slug"];
+  phoneNumber: string | null;
 };
 
 declare module "next-auth/jwt" {
   interface JWT {
     role: UserRole;
     pharmacyId: PrismaUser["slug"];
+    phoneNumber: string | null;
   }
 }
 

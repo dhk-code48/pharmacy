@@ -62,7 +62,7 @@ export default function InvoiceUi({
     yPos += 8;
     pdf.text(session?.user?.name || "", 20, yPos);
     yPos += 8;
-    pdf.text(`Email: ${session?.user?.email || ""}`, 20, yPos);
+    pdf.text(`Phone: ${session?.user?.phoneNumber || ""}`, 20, yPos);
     yPos += 20;
 
     // Add payment method
@@ -71,7 +71,7 @@ export default function InvoiceUi({
     pdf.text("Payment Method:", 120, yPos - 28);
     pdf.setTextColor(0);
     pdf.setFontSize(10);
-    pdf.text(invoice.paymentMethod, 120, yPos - 20);
+    pdf.text(invoice.paymentMethod.replace(/_/g, " "), 120, yPos - 20);
     yPos += 10;
 
     // Add table headers
@@ -177,11 +177,15 @@ export default function InvoiceUi({
                   <div>
                     <h3 className="text-lg font-semibold">Bill To:</h3>
                     <p>{session?.user?.name}</p>
-                    <p className="text-muted-foreground">Email : {session?.user?.email}</p>
+                    <p className="text-muted-foreground">Phone : {session?.user?.phoneNumber}</p>
                   </div>
                   <div>
+                    <h3 className="text-lg font-semibold">Payment Status:</h3>
+                    <p>{invoice.paymentStatus.replace(/_/g, " ")}</p>
+                  </div>{" "}
+                  <div>
                     <h3 className="text-lg font-semibold">Payment Method:</h3>
-                    <p>{invoice.paymentMethod}</p>
+                    <p>{invoice.paymentMethod.replace(/_/g, " ").replace(/_/g, " ")}</p>
                   </div>
                 </div>
                 <Table className="w-full relative">

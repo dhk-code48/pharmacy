@@ -25,7 +25,6 @@ export function DataTable<TData, TValue>({
   filterableColumns = [],
 }: DataTableProps<TData, TValue>) {
   const { isMobile } = useMediaQuery(); // Adjust the breakpoint as needed
-  const data = table.getRowModel().rows.map((row) => row.original);
 
   return (
     <div className="space-y-4">

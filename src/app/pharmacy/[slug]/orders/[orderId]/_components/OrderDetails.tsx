@@ -27,6 +27,10 @@ const OrderDetails = ({ order }: { order: PharmacyOrder }) => (
           <p>{order.user.name}</p>
         </div>
         <div>
+          <Label>User Contact</Label>
+          <p>{order.user.phoneNumber}</p>
+        </div>
+        <div>
           <Label>User Address</Label>
           <p>{formatAddress(order.userAddress, "T, D")}</p>
         </div>

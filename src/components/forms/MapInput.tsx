@@ -57,8 +57,6 @@ const MapInput = ({ onChange, value }: MapInputProps) => {
       ) : (
         <Skeleton className="w-full h-80" />
       )}
-
-      {JSON.stringify(position)}
     </>
   );
 };

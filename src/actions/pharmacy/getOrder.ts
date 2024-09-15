@@ -13,8 +13,8 @@ export default async function getPharmacyOrder({ id, slug }: { id: number; slug:
     },
     include: {
       pharmacy: {
-        select: {
-          id: true,
+        include: {
+          address: true,
         },
       },
       invoice: {
@@ -33,5 +33,6 @@ export default async function getPharmacyOrder({ id, slug }: { id: number; slug:
   });
 
   if (!order) throw new Error("Not Found!");
+
   return order;
 }

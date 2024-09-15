@@ -8,15 +8,17 @@ import { urlBase64ToUint8Array } from "@/lib/utils";
 import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
 import { AppBreadcrumb } from "@/components/layout/AppBreadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
+import { Label } from "@/components/ui/label";
+import AppHeader from "@/components/layout/AppHeader";
+import { revalidatePath } from "next/cache";
 
-const UserSetting = () => {
+const UserSetting = ({ params }: { params: { slug: string } }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  const [isSubscribed, setIsSubscribed] = useState(false);
 
   useEffect(() => {
     if ("serviceWorker" in navigator && "PushManager" in window) {
@@ -30,7 +32,6 @@ const UserSetting = () => {
       updateViaCache: "none",
     });
     const sub = await registration.pushManager.getSubscription();
-    if (sub) setIsSubscribed(true);
   }
 
   const {
@@ -40,34 +41,25 @@ const UserSetting = () => {
     mutate,
   } = useMutation({
     mutationFn: getPushSubscription,
-    onSuccess: (data) => {
-      setIsSubscribed(!!data);
-    },
   });
 
   const { mutate: server_SubscribeUser, isPending: subscribeLoading } = useMutation({
     mutationFn: subscribeUser,
     onMutate: (variables) => {
-      setIsSubscribed(true);
+      toast.success("Successfully Subscribed for subscription..");
     },
     onError: (error, variables, context) => {
-      setIsSubscribed(false);
-    },
-    onSettled: () => {
-      mutate(navigator.userAgent);
+      toast.error("Cannot subscribe for notification..");
     },
   });
 
   const { mutate: server_UnSubscribeUser, isPending: unsubscribeLoading } = useMutation({
     mutationFn: unsubscribeUser,
     onMutate: (variables) => {
-      setIsSubscribed(false);
+      toast.success("Successfully UnSubscribed for subscription..");
     },
     onError: (error, variables, context) => {
-      setIsSubscribed(true);
-    },
-    onSettled: () => {
-      mutate(navigator.userAgent);
+      toast.error("Cannot UnSubscribe for notification..");
     },
   });
 
@@ -81,9 +73,11 @@ const UserSetting = () => {
       });
       console.log("CREATING");
       server_SubscribeUser({ sub: sub.toJSON(), userAgent: navigator.userAgent });
+      mutate(sub.endpoint);
     } catch (error) {
-      setIsSubscribed(false);
-      console.error("Subscription failed:", error);
+      console.log("ERROR => ", error);
+      window.location.reload();
+      toast.error("Cannot Subscribe for notification..");
     }
   }
 
@@ -96,10 +90,12 @@ const UserSetting = () => {
         await sub.unsubscribe();
 
         server_UnSubscribeUser({ sub, userAgent: navigator.userAgent });
+        mutate(sub.endpoint);
       }
     } catch (error) {
-      setIsSubscribed(true);
-      console.error("Unsubscription failed:", error);
+      console.log("ERROR => ", error);
+      window.location.reload();
+      toast.error("Cannot UnSubscribe for notification..");
     }
   }
 
@@ -121,20 +117,23 @@ const UserSetting = () => {
   };
 
   return isMounted ? (
-    <MaxWidthWrapper className="space-y-3">
-      <AppBreadcrumb items={[{ href: "/settings", label: "Settings" }]} />
-      <div className="flex items-center justify-between border px-3 py-4 rounded-xl">
-        <div>
-          <strong>Notifications</strong>
-          <p className="text-xs">Get notified and track your order status</p>
+    <>
+      <AppHeader redirectId={params.slug} type="pharmacy" title="Settings" />
+      <MaxWidthWrapper className="space-y-3">
+        <AppBreadcrumb items={[{ href: "/settings", label: "Settings" }]} />
+        <div className="flex items-center justify-between border px-3 py-4 rounded-xl">
+          <div>
+            <Label htmlFor="subscription">Notifications</Label>
+            <p className="text-xs">Get notified and track your order status</p>
+          </div>
+          {pushSubPending ? (
+            <Skeleton className="w-10 h-5 rounded-2xl" />
+          ) : (
+            <Switch id="subscription" defaultChecked={pushSubscription ? true : false} onCheckedChange={handleSwitchChange} />
+          )}
         </div>
-        {pushSubPending ? (
-          <Skeleton className="w-10 h-5 rounded-2xl" />
-        ) : (
-          <Switch defaultChecked={pushSubscription ? true : false} onCheckedChange={handleSwitchChange} />
-        )}
-      </div>
-    </MaxWidthWrapper>
+      </MaxWidthWrapper>
+    </>
   ) : (
     <MaxWidthWrapper className="space-y-3">
       <Skeleton className="w-full h-10" />

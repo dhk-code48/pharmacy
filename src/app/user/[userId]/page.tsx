@@ -39,22 +39,12 @@ export default function UserDashboard({ params }: PageProps) {
     enabled: !!location,
   });
 
-  const {
-    data: address,
-    isLoading: isAddressLoading,
-    isError: isAddressError,
-  } = useQuery({
-    queryKey: ["address", location?.latitude, location?.longitude],
-    queryFn: () => fetchAddress(location?.latitude || 0, location?.longitude || 0),
-    enabled: !!location,
-  });
-
   if (!isMounted) return null;
 
   return (
-    <ScrollArea className="space-y-5 min-h-screen overflow-auto">
+    <div className="space-y-5 my-16">
       <AppBreadcrumb items={[{ href: "#", label: "Dashboard" }]} />
-      <div className="gap-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+      <div className="gap-5 grid grid-cols-1 md:grid-cols-2">
         <NearestPharmaciesCard
           nearestPharmacies={nearestPharmacies}
           isLoading={isPharmaciesLoading}
@@ -62,11 +52,9 @@ export default function UserDashboard({ params }: PageProps) {
           error={pharmaciesError}
           locationAccuracy={location?.accuracy}
         />
-        {address && !isAddressError && location && (
+        {location && (
           <PrescriptionUploadCard
             nearestPharmacies={nearestPharmacies}
-            address={address}
-            isAddressLoading={isAddressLoading}
             location={location}
             onOrderSubmitted={(orderId) => {
               setNewOrder(orderId);
@@ -82,7 +70,7 @@ export default function UserDashboard({ params }: PageProps) {
         pharmacyName={nearestPharmacies?.[0]?.name}
         userId={params.userId}
       />
-    </ScrollArea>
+    </div>
   );
 }
 

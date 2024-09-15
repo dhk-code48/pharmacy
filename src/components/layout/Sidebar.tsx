@@ -15,6 +15,7 @@ import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { UserAccount } from "./UserAccount";
 import { ThemeToggle } from "./ThemeToggle";
 import { Session, User } from "next-auth";
+import InstallPWAButton from "../shared/InstallPwa";
 
 type SidebarProps = {
   prefix: string;
@@ -118,6 +119,7 @@ const Sidebar: FC<SidebarProps> = ({ prefix, links }) => {
                       })}
                     </section>
                   ))}
+                  <InstallPWAButton isSidebarExpanded={isSidebarExpanded} />
                 </nav>
               </div>
             </aside>
@@ -149,7 +151,6 @@ export function MobileSheetSidebar({ links, prefix, user }: SidebarProps & { use
                 <Link href="#" className="flex items-center gap-2 text-lg font-semibold">
                   <Logo />
                 </Link>
-
                 {links.map((section) => (
                   <section key={section.title} className="flex flex-col gap-0.5">
                     <p className="text-xs text-muted-foreground">{section.title}</p>
@@ -175,6 +176,7 @@ export function MobileSheetSidebar({ links, prefix, user }: SidebarProps & { use
                     })}
                   </section>
                 ))}
+                <InstallPWAButton isSidebarExpanded={false} />
                 <section className="space-y-2 flex flex-col">
                   {!user?.pharmacyId && (
                     <Link className={buttonVariants({ variant: "outline" })} href="/pharmacy/create">

@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SearchParams } from "@/types/data-table";
 import React, { Suspense } from "react";
 import * as z from "zod";
+import AppHeader from "@/components/layout/AppHeader";
 
 const searchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -36,6 +37,7 @@ const SuspensePage = ({ searchParams, params }: PageProps) => {
 const PharmacyOrders = ({ searchParams, params }: PageProps) => {
   return (
     <div>
+      <AppHeader redirectId={params.slug} type="pharmacy" title="Orders" />
       <ErrorBoundary>
         <Suspense fallback={<Skeleton className="size-full" />}>
           <SuspensePage searchParams={searchParams} params={params} />

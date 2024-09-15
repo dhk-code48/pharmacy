@@ -20,9 +20,14 @@ export default function NearestPharmaciesCard({ nearestPharmacies, isLoading, is
         <CardDescription>Pharmacies close to your location</CardDescription>
       </CardHeader>
       <CardContent>
-        {isLoading && <Skeleton className="h-8 w-full" />}
-        {isError && <p className="text-sm text-red-500">Error: {error?.message}</p>}
-        {nearestPharmacies && nearestPharmacies.length > 0 ? (
+        {isLoading ? (
+          <div className="space-y-2 my-2">
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+          </div>
+        ) : isError ? (
+          <p className="text-sm text-red-500">Error: {error?.message}</p>
+        ) : nearestPharmacies && nearestPharmacies.length > 0 ? (
           <div className="space-y-1">
             {nearestPharmacies.map(
               (pharmacy, index) =>
@@ -41,11 +46,6 @@ export default function NearestPharmaciesCard({ nearestPharmacies, isLoading, is
           <Badge variant="secondary">Location Accuracy {locationAccuracy?.toFixed(0)}%</Badge>
         </div>
       </CardContent>
-      <CardFooter>
-        <Button className="w-full" variant="outline">
-          View All Pharmacies
-        </Button>
-      </CardFooter>
     </Card>
   );
 }

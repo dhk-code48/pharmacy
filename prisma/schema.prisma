@@ -23,6 +23,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  phoneNumber   String?
 
   role    UserRole @default(USER)
   reviews Review[]

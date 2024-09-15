@@ -1,9 +1,11 @@
 "use server";
 
 import { auth } from "@/auth";
+import { data } from "@/components/data-table/constants";
 import { prisma } from "@/lib/db";
 import { Notification } from "@/types";
 import { PushSubscription as DbPushSubscription } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import webpush from "web-push";
 
 webpush.setVapidDetails("mailto:dhkdarshan48@gmail.com", process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!, process.env.VAPID_PRIVATE_KEY!);
@@ -29,7 +31,7 @@ export async function subscribeUser({ sub, userAgent }: { sub: PushSubscriptionJ
 
   if (!newSubscription) throw new Error("Cannot create notification subscription...");
 
-  console.log("SUBSCRIBED SERVER => ");
+  revalidatePath("/");
   return newSubscription;
 }
 
@@ -54,6 +56,7 @@ export async function unsubscribeUser({ sub, userAgent }: { sub: PushSubscriptio
 
   if (!oldSubscription) throw new Error("Cannot create notification subscription...");
 
+  revalidatePath("/");
   return oldSubscription;
 }
 export async function sendNotification(userId: string, notificationBody: Notification) {

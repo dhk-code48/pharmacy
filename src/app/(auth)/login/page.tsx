@@ -1,19 +1,12 @@
 "use client";
 import { signIn, useSession } from "next-auth/react";
 import { Icons } from "@/components/shared/Icons";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 const AuthLogin = () => {
-  const { data: session, status } = useSession();
-
-  const router = useRouter();
-
-  if (status === "authenticated") {
-    router.push(`/user/${session.user.id}`);
-  }
   const handleLogin = async () => {
     const result = await signIn("google", { redirect: false });
 
@@ -27,7 +20,13 @@ const AuthLogin = () => {
   };
 
   return (
-    <div className="h-screen grid place-content-center grid-cols-1 lg:grid-cols-2">
+    <div className="h-screen grid relative place-content-center grid-cols-1 lg:grid-cols-2">
+      <div className="md:top-10 md:left-10 top-5 left-5 absolute">
+        <Link href="/" className={buttonVariants({ variant: "outline" })}>
+          <Icons.chevronLeft size={20} />
+          Back Home
+        </Link>
+      </div>
       <Image className="hidden md:block aspect-video h-screen object-cover" src="/images/placeholder.png" alt="auth" width={1920} height={1080} />
 
       {/* Right side - OAuth Form */}

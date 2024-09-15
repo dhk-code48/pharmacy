@@ -38,7 +38,7 @@ export default function RootLayout({
           <GeoLocationProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
               <>{children}</>
-              <Toaster richColors closeButton />
+              <Toaster richColors closeButton position="top-center" />
             </ThemeProvider>
           </GeoLocationProvider>
         </SessionProvider>

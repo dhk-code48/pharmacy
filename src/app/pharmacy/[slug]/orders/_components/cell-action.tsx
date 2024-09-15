@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 
 export function CellAction({ order }: { order: PaginatedOrder }) {
   const router = useRouter();
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
@@ -90,8 +91,6 @@ export function CellAction({ order }: { order: PaginatedOrder }) {
           Mark Out of Stock
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-
-        <DropdownMenuItem className="text-red-600 bg-destructive/30">Remove</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -25,6 +25,8 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import useIsMounted from "@/hooks/useMounted";
+import { Skeleton } from "../ui/skeleton";
 
 interface BreadcrumbProps {
   toDisplay?: number;
@@ -37,9 +39,11 @@ interface BreadcrumbProps {
 export function AppBreadcrumb({ items, toDisplay = 2 }: BreadcrumbProps) {
   const [open, setOpen] = React.useState(false);
   const isDesktop = useMediaQuery();
+  const isMounted = useIsMounted();
 
+  if (!isMounted) return <Skeleton className="w-35 h-9" />;
   return (
-    <Breadcrumb>
+    <Breadcrumb className="hidden md:flex">
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink href={"/"}>Home</BreadcrumbLink>

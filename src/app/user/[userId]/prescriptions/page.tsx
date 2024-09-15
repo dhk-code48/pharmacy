@@ -1,9 +1,11 @@
+import { getPaginatedPrescriptions } from "@/actions/user/getPaginatedPrescriptions";
 import { AppBreadcrumb } from "@/components/layout/AppBreadcrumb";
 import ErrorBoundary from "@/components/shared/ErrorBoundary";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SearchParams } from "@/types/data-table";
 import React, { Suspense } from "react";
 import * as z from "zod";
+import { PrescriptionsTable } from "./_components/PrescriptionTable";
 
 type PageProps = {
   searchParams: SearchParams;
@@ -14,13 +16,17 @@ const searchParamsSchema = z.object({
   per_page: z.coerce.number().default(10),
   sort: z.string().optional(),
   description: z.string().optional(),
-  status: z.string().optional(),
+  label: z.string().optional(),
 });
 
 const SuspensePage = ({ searchParams }: PageProps) => {
   const search = searchParamsSchema.parse(searchParams);
-  //   const membersPromise = getPrescription(search);
-  return <></>;
+  const prescriptionPromise = getPaginatedPrescriptions(search);
+  return (
+    <>
+      <PrescriptionsTable prescriptionPromise={prescriptionPromise} />
+    </>
+  );
 };
 
 const UserPrescriptionsPage = ({ searchParams }: PageProps) => {

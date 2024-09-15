@@ -11,10 +11,7 @@ export const USER_DASHBOARD_SIDEBAR: SidebarNavItem[] = [
   },
   {
     title: "OPTIONS",
-    items: [
-      { href: "/addresses", icon: "addressFilled", title: "Addresses" },
-      { href: "/settings", icon: "settingsFilled", title: "Settings" },
-    ],
+    items: [{ href: "/settings", icon: "settingsFilled", title: "Settings" }],
   },
 ];
 
