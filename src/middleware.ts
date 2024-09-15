@@ -1,138 +1,99 @@
-import { auth } from "@/auth";
-import { NextResponse } from "next/server";
+export { auth as default } from "@/auth";
 
-const pharmacyPathPrefix = "/pharmacy/";
-const publicRoutes = ["/", "/privacy", "/terms"];
-const authRoutes = ["/login", "/api/auth/session"];
-const userPathPrefix = "/user/";
-const apiAuthPrefix = "/api/auth";
-const phoneNumberFormPath = "/validate-phone"; // Route to phone number form
+// // Define route prefixes and public routes
+// const ROUTES = {
+//   PUBLIC: ["/", "/privacy", "/terms"],
+//   AUTH: ["/login", "/api/auth/session"],
+//   USER: "/user",
+//   PHARMACY: "/pharmacy",
+//   PHONE_VALIDATION: "/validate-phone",
+//   API_AUTH: "/api/auth",
+// };
 
-export default auth(async (req): Promise<Response | void> => {
-  const { nextUrl } = req;
-  req.headers.set("Cache-Control", "no-store");
-  const user = req.auth?.user;
+// // Helper function to check if a path starts with a prefix
+// const pathStartsWith = (path: string, prefix: string) => path.startsWith(prefix) || path === prefix;
 
-  // Checking if the user is logged in
-  const isLoggedIn = !!user;
-  const hasPhoneNumber = !!user?.phoneNumber; // Check if the user has a phone number
+// export async function middleware(request: Request) {
+//   const { pathname } = new URL(request.url);
 
-  const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-  const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+//   // Handle public routes and API auth routes
+//   if (ROUTES.PUBLIC.includes(pathname) || pathStartsWith(pathname, ROUTES.API_AUTH)) {
+//     return NextResponse.next();
+//   }
 
-  console.log("Is Login => ", isLoggedIn);
-  console.log("Has Phone Number => ", user?.phoneNumber);
-  console.log("Is Auth Routes => ", isAuthRoute);
-  console.log("PATH => ", nextUrl.pathname);
+//   const session = await auth();
+//   const authorized = !!session?.user;
 
-  // Helper function for redirecting based on user type
-  const redirectToUserPage = () => {
-    if (user?.pharmacyId) {
-      return NextResponse.rewrite(new URL(`/pharmacy/${user.pharmacyId}`, req.url));
-    }
-    if (user?.id) {
-      return NextResponse.rewrite(new URL(`/user/${user.id}`, req.url));
-    }
-    return NextResponse.next();
-  };
+//   // Logging (consider using a proper logging solution in production)
+//   console.log(`Path: ${pathname}, Authenticated: ${!!session?.user}`);
 
-  if (nextUrl.pathname === "/" && isLoggedIn) {
-    return redirectToUserPage();
-  }
+//   // Redirect unauthenticated users to login
+//   if (!session?.user) {
+//     const callbackUrl = encodeURIComponent(`${pathname}${new URL(request.url).search}`);
+//     return NextResponse.redirect(new URL(`/login?callbackUrl=${callbackUrl}`, request.url));
+//   }
 
-  // Handle API auth routes (No protection needed)
-  if (isApiAuthRoute) {
-    return;
-  }
+//   const { user } = session;
+//   const hasPhoneNumber = !!user.phoneNumber;
 
-  // Redirect logged-in users from auth routes (e.g., /login) to their respective dashboard
-  if (isAuthRoute && isLoggedIn) {
-    return redirectToUserPage();
-  }
+//   // Redirect authenticated users from auth routes
+//   if (ROUTES.AUTH.includes(pathname) && authorized) {
+//     return redirectToUserPage(request, user);
+//   }
 
-  // Redirect unauthenticated users accessing protected routes to the login page
-  if (!isLoggedIn && !isPublicRoute) {
-    const callbackUrl = `${nextUrl.pathname}${nextUrl.search || ""}`;
-    const encodedCallbackUrl = encodeURIComponent(callbackUrl);
-    return NextResponse.rewrite(new URL(`/login?callbackUrl=${encodedCallbackUrl}`, req.url));
-  }
+//   // Handle phone number validation
+//   if (pathStartsWith(pathname, ROUTES.PHONE_VALIDATION)) {
+//     return hasPhoneNumber ? redirectToUserPage(request, user) : NextResponse.next();
+//   }
 
-  if (nextUrl.pathname.startsWith(phoneNumberFormPath) && hasPhoneNumber) {
-    return redirectToUserPage();
-  }
+//   // Ensure phone number is provided for user and pharmacy routes
+//   if (!hasPhoneNumber && (pathStartsWith(pathname, ROUTES.USER) || pathStartsWith(pathname, ROUTES.PHARMACY))) {
+//     return NextResponse.redirect(new URL(ROUTES.PHONE_VALIDATION, request.url));
+//   }
 
-  // If the user is logged in and accessing a protected route but doesn't have a phone number, redirect to phone number form
-  if (isLoggedIn && !hasPhoneNumber && (nextUrl.pathname.startsWith(userPathPrefix) || nextUrl.pathname.startsWith(pharmacyPathPrefix))) {
-    return NextResponse.rewrite(new URL(`${phoneNumberFormPath}`, req.url));
-  }
+//   // Handle pharmacy routes
+//   if (pathStartsWith(pathname, ROUTES.PHARMACY)) {
+//     return handlePharmacyAccess(request, user);
+//   }
 
-  // Validate pharmacy ownership if accessing pharmacy routes
-  if (nextUrl.pathname.startsWith(pharmacyPathPrefix)) {
-    return handlePharmacyOwnership(req);
-  }
+//   // Handle user routes
+//   if (pathStartsWith(pathname, ROUTES.USER)) {
+//     return handleUserAccess(request, user);
+//   }
 
-  // Validate user ownership if accessing user routes
-  if (nextUrl.pathname.startsWith(userPathPrefix)) {
-    return handleUserOwnership(req);
-  }
+//   // For all other routes, allow access
+//   return NextResponse.next();
+// }
 
-  return NextResponse.next();
-});
+// // Helper function to redirect to user's appropriate page
+// function redirectToUserPage(request: Request, user: any) {
+//   const redirectPath = user.pharmacyId ? `${ROUTES.PHARMACY}/${user.pharmacyId}` : `${ROUTES.USER}/${user.id}`;
+//   return NextResponse.redirect(new URL(redirectPath, request.url));
+// }
 
-// Helper function to handle pharmacy ownership validation
-const handlePharmacyOwnership = (req: any): Response | void => {
-  const { nextUrl } = req;
-  const user = req.auth?.user;
+// // Handle pharmacy route access
+// function handlePharmacyAccess(request: Request, user: any) {
+//   const pharmacyId = new URL(request.url).pathname.split("/")[2];
 
-  // Ensure user has pharmacy ownership
-  if (!user?.pharmacyId) {
-    // If no pharmacyId, redirect to user page or login
-    if (user?.id) {
-      return NextResponse.rewrite(new URL(`/user/${user.id}`, req.url));
-    }
-    return NextResponse.rewrite(new URL("/login", req.url));
-  }
+//   if (user.pharmacyId !== pharmacyId) {
+//     return redirectToUserPage(request, user);
+//   }
 
-  // Ensure the pharmacy slug matches the user's pharmacyId
-  const pharmacySlug = nextUrl.pathname.split("/")[2]; // Extract the slug from the path
-  if (pharmacySlug !== user.pharmacyId) {
-    // If slug doesn't match, redirect to the correct pharmacy page
-    return NextResponse.rewrite(new URL(`/pharmacy/${user.pharmacyId}`, req.url));
-  }
+//   return NextResponse.next();
+// }
 
-  return NextResponse.next();
-};
+// // Handle user route access
+// function handleUserAccess(request: Request, user: any) {
+//   const userId = new URL(request.url).pathname.split("/")[2];
 
-// Helper function to handle user ownership validation
-const handleUserOwnership = (req: any): Response | void => {
-  const { nextUrl } = req;
-  const user = req.auth?.user;
+//   if (user.id !== userId) {
+//     return redirectToUserPage(request, user);
+//   }
 
-  // Ensure user is logged in
-  if (!user) {
-    return NextResponse.rewrite(new URL("/login", req.url));
-  }
+//   return NextResponse.next();
+// }
 
-  // Extract user ID from the path
-  const userSlug = nextUrl.pathname.split("/")[2]; // Assuming path is like /user/[id]
-  if (userSlug !== user.id) {
-    // If user ID from the path doesn't match the authenticated user's ID, redirect
-    return NextResponse.rewrite(new URL(`/user/${user.id}`, req.url));
-  }
-
-  return NextResponse.next();
-};
-
+// Matcher configuration
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)"],
 };

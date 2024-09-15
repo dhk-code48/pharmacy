@@ -1,5 +1,7 @@
 import confetti from "canvas-confetti";
 import { clsx, type ClassValue } from "clsx";
+import { Session } from "next-auth";
+import { redirect } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -77,3 +79,16 @@ export const sideCannonConfetti = () => {
 
   frame();
 };
+
+export function checkForPharmacy(session: Session) {
+  session.user.pharmacyId && redirect(`/pharmacy/${session.user.pharmacyId}`);
+}
+export function checkForUser(session: Session) {
+  !session.user.pharmacyId && redirect(`/user/${session.user.id}`);
+}
+export function verifyUserOwnerShip(session: Session, userId: string) {
+  session.user.id !== userId && redirect(`/user/${session.user.id}`);
+}
+export function verifyPharmacyOwnerShip(session: Session, slug: string) {
+  session.user.pharmacyId !== slug && redirect(`/pharmacy/${session.user.pharmacyId}`);
+}
