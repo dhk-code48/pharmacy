@@ -17,58 +17,51 @@ type GetPaginatedOrderProps = z.infer<typeof paginatedOrderSchema> & {
   slug?: string;
 };
 
-export async function getPaginatedOrders({ page, per_page, sort, description, status, slug }: GetPaginatedOrderProps) {
+export async function getPaginatedOrders({ page, per_page, sort = "createdAt.desc", description, status, slug }: GetPaginatedOrderProps) {
   const session = await auth();
 
-  if (!session?.user) throw new Error("Unauthorized!!");
-  if (!session?.user.id) throw new Error("Unauthorized!!");
+  if (!session?.user?.id) throw new Error("Unauthorized!");
 
   const offset = (page - 1) * per_page;
 
-  const [column, order] = (sort?.split(".") as [keyof Prisma.OrderOrderByWithRelationInput | undefined, "asc" | "desc" | undefined]) ?? [
-    "createdAt",
-    "desc",
-  ];
+  const [column = "createdAt", order = "desc"] = sort.split(".") as [keyof Prisma.OrderOrderByWithRelationInput, "asc" | "desc"];
 
-  const statuses = (status?.split(".") as (keyof typeof OrderStatus)[]) ?? [];
+  const statuses = status?.split(".") as OrderStatus[] | undefined;
 
-  // Fetch orders of the specific user
-  const orders: PaginatedOrder[] = await prisma.order.findMany({
-    skip: offset,
-    take: per_page,
-    where: {
-      pharmacySlug: slug,
-      userId: session.user.id,
-      description: description ? { contains: description } : undefined,
-      status: statuses.length > 0 ? { in: statuses } : undefined, // Only apply the status filter if statuses is not empty
-    },
-    orderBy: column && order ? { [column]: order } : { createdAt: "desc" },
-    include: {
-      invoice: {
-        include: {
-          medicines: true,
+  // Consolidate filters into a single object
+  const filters = {
+    pharmacySlug: slug,
+    pharmacy: { userId: session.user.id },
+    description: description ? { contains: description } : undefined,
+    status: statuses?.length ? { in: statuses } : undefined,
+  };
+
+  const [orders, totalOrders] = await prisma.$transaction([
+    prisma.order.findMany({
+      skip: offset,
+      take: per_page,
+      where: filters,
+      orderBy: { [column]: order },
+      include: {
+        invoice: {
+          include: { medicines: true },
+        },
+        user: true,
+        pharmacy: {
+          include: { address: true },
+        },
+        prescription: {
+          include: { images: true },
         },
       },
-      user: true,
-      pharmacy: {
-        include: {
-          address: true,
-        },
-      }, // Include related pharmacy data
-      prescription: {
-        include: {
-          images: true,
-        },
-      }, // Include images associated with the order
-    },
-  });
-
-  const totalOrders = await prisma.order.count({
-    where: {
-      userId: session.user.id,
-      description: description ? { contains: description } : undefined,
-    },
-  });
+    }),
+    prisma.order.count({
+      where: {
+        pharmacy: { userId: session.user.id },
+        description: description ? { contains: description } : undefined,
+      },
+    }),
+  ]);
 
   const pageCount = Math.ceil(totalOrders / per_page);
 

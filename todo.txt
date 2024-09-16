@@ -1,0 +1,11 @@
+# Optimize Database Queries (server action)
+    - prisma.$transaction
+
+
+# Optimize prisma schema (add indexes)
+    - use proper optimized indexes
+
+# Optimize Revalidation
+    - use proper revalidation path
+
+#

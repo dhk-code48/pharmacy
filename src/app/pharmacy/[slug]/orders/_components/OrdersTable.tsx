@@ -7,7 +7,7 @@ import { getColumns } from "./columns";
 import { useDataTable } from "@/hooks/useDataTable";
 import type { DataTableFilterableColumn, DataTableSearchableColumn } from "@/types/data-table";
 import { OrderStatus } from "@prisma/client";
-import { getPaginatedOrders } from "@/actions/user/getPaginatedOrders";
+import { getPaginatedOrders } from "@/actions/pharmacy/getPaginatedOrders";
 import { PaginatedOrder } from "@/types";
 import { Button } from "@/components/ui/button";
 
