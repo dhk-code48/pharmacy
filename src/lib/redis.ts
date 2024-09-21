@@ -10,10 +10,10 @@ let redis: Redis;
 
 // Initialize PrismaClient
 if (process.env.NODE_ENV === "production") {
-  redis = new Redis();
+  redis = process.env.REDIS_URL ? new Redis(process.env.REDIS_URL) : new Redis();
 } else {
   if (!global.redis) {
-    global.redis = new Redis();
+    global.redis = process.env.REDIS_URL ? new Redis(process.env.REDIS_URL) : new Redis();
   }
   redis = global.redis;
 }
