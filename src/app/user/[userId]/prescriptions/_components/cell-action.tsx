@@ -36,13 +36,6 @@ const CellAction = ({ prescription }: { prescription: Prescription & { images: M
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem>
-          Re Order
-          <DropdownMenuShortcut>
-            <Icons.package size={18} />
-          </DropdownMenuShortcut>
-        </DropdownMenuItem>
-
         <Dialog>
           <DialogTrigger
             className={cn(

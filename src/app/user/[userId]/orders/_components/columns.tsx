@@ -7,13 +7,13 @@ import { CldImage } from "next-cloudinary";
 import { ORDER_STATUS_COLOR, PAYMENT_STATUS } from "@/config";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { PaginatedOrder } from "@/types";
+import { PaginatedUserOrder } from "@/types";
 
-export function getColumns(): ColumnDef<PaginatedOrder>[] {
+export function getColumns(): ColumnDef<PaginatedUserOrder>[] {
   return columns;
 }
 
-export const columns: ColumnDef<PaginatedOrder>[] = [
+export const columns: ColumnDef<PaginatedUserOrder>[] = [
   {
     accessorKey: "id",
     header: "Order Id",

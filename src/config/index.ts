@@ -83,3 +83,38 @@ export const ORDER_STATUS_STEPS: { status: OrderStatus; icon: IconNames; progres
   { status: "RETURN_REQUESTED", icon: "returnRequested", progress: 0 },
   { status: "RETURNED", icon: "refresh", progress: 0 },
 ];
+
+export const PHARMACY_STATUS_COLOR = {
+  UNVERIFIED: {
+    value: "#EF4444", // Red 500
+    foreground: "#000000", // White
+  },
+  VERIFIED: {
+    value: "#2563EB", // Blue 600
+    foreground: "#FFFFFF", // White
+  },
+};
+export const FEEDBACK_FROM = {
+  USER: {
+    value: "#7C3AED", // Red 500
+    foreground: "#ffffff", // White
+  },
+  PHARMACY: {
+    value: "#3B82F6", // Blue 600
+    foreground: "#000000", // White
+  },
+};
+export const FEEDBACK_TYPE = {
+  PROBLEM: {
+    value: "#EF4444", // Red 500
+    foreground: "#000000", // White
+  },
+  QUESTION: {
+    value: "#F59E0B", // Blue 600
+    foreground: "#000000", // White
+  },
+  SUGGESTION: {
+    value: "#3B82F6", // Blue 600
+    foreground: "#000000", // White
+  },
+};

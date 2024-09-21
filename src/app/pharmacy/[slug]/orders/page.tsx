@@ -1,4 +1,4 @@
-import { getPaginatedOrders } from "@/actions/pharmacy/getPaginatedOrders";
+import { getPaginatedPharmacyOrders } from "@/actions/pharmacy/getPaginatedOrders";
 import { OrdersTable } from "./_components/OrdersTable";
 import ErrorBoundary from "@/components/shared/ErrorBoundary";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -25,7 +25,7 @@ type PageProps = {
 const SuspensePage = ({ searchParams, params }: PageProps) => {
   const search = searchParamsSchema.parse(searchParams);
   console.log(params.slug);
-  const membersPromise = getPaginatedOrders({ ...search, slug: params.slug });
+  const membersPromise = getPaginatedPharmacyOrders({ ...search, slug: params.slug });
 
   return (
     <>

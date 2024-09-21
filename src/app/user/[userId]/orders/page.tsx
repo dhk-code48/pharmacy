@@ -1,10 +1,11 @@
 import React, { Suspense } from "react";
 import * as z from "zod";
 import type { SearchParams } from "@/types/data-table";
-import { getPaginatedOrders } from "@/actions/user/getPaginatedOrders";
+import { getPaginatedUserOrders } from "@/actions/user/getPaginatedOrders";
 import ErrorBoundary from "@/components/shared/ErrorBoundary";
 import { Skeleton } from "@/components/ui/skeleton";
 import { OrdersTable } from "./_components/OrdersTable";
+import AppHeader from "@/components/layout/AppHeader";
 
 type PageProps = {
   searchParams: SearchParams;
@@ -20,14 +21,15 @@ const searchParamsSchema = z.object({
 
 const SuspensePage = ({ searchParams }: PageProps) => {
   const search = searchParamsSchema.parse(searchParams);
-  const membersPromise = getPaginatedOrders(search);
+  const membersPromise = getPaginatedUserOrders(search);
 
   return <OrdersTable membersPromise={membersPromise} />;
 };
 
-const UserOrdersPage = ({ searchParams }: PageProps) => {
+const UserOrdersPage = ({ searchParams, params }: PageProps & { params: { userId: string } }) => {
   return (
     <>
+      <AppHeader redirectId={params.userId} title="Orders" type="user" />
       <ErrorBoundary>
         <Suspense fallback={<Skeleton className="size-full" />}>
           <SuspensePage searchParams={searchParams} />

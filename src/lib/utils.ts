@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client";
 import confetti from "canvas-confetti";
 import { clsx, type ClassValue } from "clsx";
 import { Session } from "next-auth";
@@ -91,4 +92,11 @@ export function verifyUserOwnerShip(session: Session, userId: string) {
 }
 export function verifyPharmacyOwnerShip(session: Session, slug: string) {
   session.user.pharmacyId !== slug && redirect(`/pharmacy/${session.user.pharmacyId}`);
+}
+export function verifySuperAdminOwnerShip(session: Session) {
+  session.user.role === UserRole.ADMIN && redirect("/superAdmin");
+}
+
+export function formatNumber(num: number): string {
+  return num < 10 ? num.toString().padStart(2, "0") : num.toString();
 }

@@ -23,7 +23,8 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  phoneNumber   String?
+  feedBacks     FeedBack[]
+  phoneNumber   String?    @unique
 
   role    UserRole @default(USER)
   reviews Review[]
@@ -148,6 +149,7 @@ model Pharmacy {
   id          Int        @id @default(autoincrement())
   name        String
   slug        String     @unique
+  status      PharmacyStatus @default(UNVERIFIED)
   images      Media[]
   description String
   reviews     Review[]
@@ -300,6 +302,31 @@ model Media {
   updatedAt DateTime @updatedAt()
 }
 
+model FeedBack {
+  id      Int @id @default(autoincrement())
+  from    FeedBackFrom
+  topic   FeedBackTopic
+  title   String
+  message String @db.Text
+
+  userId  String
+  user    User @relation(fields: [userId],references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+}
+
+enum FeedBackTopic {
+  SUGGESTION
+  PROBLEM
+  QUESTION
+}
+
+enum FeedBackFrom {
+  PHARMACY
+  USER
+}
+
 enum OrderStatus {
   PRESCRIPTION_UNDER_REVIEW
   INVOICE_PROVIDED
@@ -330,4 +357,8 @@ enum SubscriptionStatus {
   ACTIVE
   EXPIRED
   REVOKED
+}
+enum PharmacyStatus {
+  VERIFIED
+  UNVERIFIED
 }

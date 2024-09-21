@@ -9,13 +9,14 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/
 import { ScrollArea } from "../ui/scroll-area";
 import { cn } from "@/lib/utils";
 import Logo from "./Logo";
-import { SidebarNavItem } from "@/types";
+import { SidebarLinks, SidebarNavItem } from "@/types";
 import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { UserAccount } from "./UserAccount";
 import { ThemeToggle } from "./ThemeToggle";
 import { Session, User } from "next-auth";
 import InstallPWAButton from "../shared/InstallPwa";
+import FeedbackDialog from "./FeedbackDialog";
 
 type SidebarProps = {
   prefix: string;
@@ -23,8 +24,6 @@ type SidebarProps = {
 };
 
 const Sidebar: FC<SidebarProps> = ({ prefix, links }) => {
-  const path = usePathname();
-
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(() => {
     if (typeof window !== "undefined") {
       const saved = window.localStorage.getItem("sidebarExpanded");
@@ -78,49 +77,16 @@ const Sidebar: FC<SidebarProps> = ({ prefix, links }) => {
                   {links.map((section) => (
                     <section key={section.title} className="flex flex-col gap-0.5">
                       {isSidebarExpanded ? <p className="text-xs text-muted-foreground">{section.title}</p> : <div className="h-4" />}
-                      {section.items.map((item) => {
-                        const Icon = Icons[item.icon || "arrowRight"];
-                        const href = prefix + item.href;
-                        return (
-                          <Fragment key={`link-fragment-${item.title}`}>
-                            {isSidebarExpanded ? (
-                              <Link
-                                key={`link-${item.title}`}
-                                href={href}
-                                className={cn(
-                                  "flex items-center gap-3 rounded-md p-2 text-sm font-medium hover:bg-muted",
-                                  path === href ? "bg-muted text-primary" : "text-muted-foreground hover:text-accent-foreground"
-                                )}
-                              >
-                                <Icon className="size-5" />
-                                {item.title}
-                              </Link>
-                            ) : (
-                              <Tooltip key={`tooltip-${item.title}`}>
-                                <TooltipTrigger asChild>
-                                  <Link
-                                    key={`link-tooltip-${item.title}`}
-                                    href={href}
-                                    className={cn(
-                                      "flex items-center gap-3 rounded-md py-2 text-sm font-medium hover:bg-muted",
-                                      path === href ? "bg-muted text-primary" : "text-muted-foreground hover:text-accent-foreground"
-                                    )}
-                                  >
-                                    <span className="flex size-full items-center justify-center">
-                                      <Icon className="size-5" />
-                                    </span>
-                                  </Link>
-                                </TooltipTrigger>
-                                <TooltipContent side="right">{item.title}</TooltipContent>
-                              </Tooltip>
-                            )}
-                          </Fragment>
-                        );
-                      })}
+                      {section.items.map((item) => (
+                        <SidebarLink key={item.href} prefix={prefix} isSidebarExpanded={isSidebarExpanded} item={item} />
+                      ))}
                     </section>
                   ))}
-                  <InstallPWAButton isSidebarExpanded={isSidebarExpanded} />
                 </nav>
+                <div className="flex flex-col gap-2 p-4">
+                  <FeedbackDialog isSidebarExpanded={isSidebarExpanded} />
+                  <InstallPWAButton isSidebarExpanded={isSidebarExpanded} />
+                </div>
               </div>
             </aside>
           </ScrollArea>
@@ -176,15 +142,13 @@ export function MobileSheetSidebar({ links, prefix, user }: SidebarProps & { use
                     })}
                   </section>
                 ))}
-                <InstallPWAButton isSidebarExpanded={false} />
                 <section className="space-y-2 flex flex-col">
-                  {!user?.pharmacyId && (
+                  <InstallPWAButton isSidebarExpanded={false} />
+                  {!!user?.pharmacyId && (
                     <Link className={buttonVariants({ variant: "outline" })} href="/pharmacy/create">
                       Own A pharmacy?, Create One
                     </Link>
                   )}
-                  <UserAccount />
-                  <ThemeToggle />
                 </section>
               </nav>
             </div>
@@ -196,5 +160,46 @@ export function MobileSheetSidebar({ links, prefix, user }: SidebarProps & { use
 
   return <div className="flex size-9 animate-pulse rounded-lg bg-muted md:hidden" />;
 }
+
+export const SidebarLink = ({ item, isSidebarExpanded, prefix = "" }: { item: SidebarLinks; isSidebarExpanded: boolean; prefix?: string }) => {
+  const path = usePathname();
+  const Icon = Icons[item.icon || "arrowRight"];
+  const href = prefix + item.href;
+  return (
+    <Fragment key={`link-fragment-${item.title}`}>
+      {isSidebarExpanded ? (
+        <Link
+          key={`link-${item.title}`}
+          href={href}
+          className={cn(
+            "flex items-center gap-3 rounded-md p-2 text-sm font-medium hover:bg-muted",
+            path === href ? "bg-muted text-primary" : "text-muted-foreground hover:text-accent-foreground"
+          )}
+        >
+          <Icon className="size-5" />
+          {item.title}
+        </Link>
+      ) : (
+        <Tooltip key={`tooltip-${item.title}`}>
+          <TooltipTrigger asChild>
+            <Link
+              key={`link-tooltip-${item.title}`}
+              href={href}
+              className={cn(
+                "flex items-center gap-3 rounded-md py-2 text-sm font-medium hover:bg-muted",
+                path === href ? "bg-muted text-primary" : "text-muted-foreground hover:text-accent-foreground"
+              )}
+            >
+              <span className="flex size-full items-center justify-center">
+                <Icon className="size-5" />
+              </span>
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="right">{item.title}</TooltipContent>
+        </Tooltip>
+      )}
+    </Fragment>
+  );
+};
 
 export { Sidebar };

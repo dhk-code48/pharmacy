@@ -1,5 +1,3 @@
-// lib/redis.ts
-
 import Redis from "ioredis";
 
 // Extend the global object to include the Redis instance

@@ -10,6 +10,8 @@ import NearestPharmaciesCard from "./_components/NearestPharmacy";
 import PrescriptionUploadCard from "@/components/forms/order/PrescriptionUploadCard";
 import OrderConfirmationDialog from "@/components/forms/order/OrderConfirmDialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import AppHeader from "@/components/layout/AppHeader";
+import PharmacyMap from "@/components/shared/PharmacyMap";
 
 interface PageProps {
   params: {
@@ -39,10 +41,20 @@ export default function UserDashboard({ params }: PageProps) {
     enabled: !!location,
   });
 
+  const [loading, setLoading] = useState<boolean>(true);
   if (!isMounted) return null;
 
+  const pharmacies = [
+    { name: "Pharmacy A", latitude: 40.73061, longitude: -73.935242 },
+    { name: "Pharmacy B", latitude: 37.773972, longitude: -122.431297 },
+    { name: "Pharmacy C", latitude: 51.5074, longitude: -0.1278 },
+    // Add more pharmacies
+  ];
+
   return (
-    <div className="space-y-5 my-16">
+    <div className="space-y-5">
+      <AppHeader redirectId={params.userId} title="Notifications" type="user" />
+
       <AppBreadcrumb items={[{ href: "#", label: "Dashboard" }]} />
       <div className="gap-5 grid grid-cols-1 md:grid-cols-2">
         <NearestPharmaciesCard
@@ -70,6 +82,8 @@ export default function UserDashboard({ params }: PageProps) {
         pharmacyName={nearestPharmacies?.[0]?.name}
         userId={params.userId}
       />
+
+      <PharmacyMap loading={false} />
     </div>
   );
 }

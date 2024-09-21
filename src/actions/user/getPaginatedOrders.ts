@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
-import { PaginatedOrder } from "@/types";
+import { PaginatedUserOrder } from "@/types";
 import { OrderStatus, Prisma } from "@prisma/client";
 import { z } from "zod";
 
@@ -17,7 +17,7 @@ type GetPaginatedOrderProps = z.infer<typeof paginatedOrderSchema> & {
   slug?: string;
 };
 
-export async function getPaginatedOrders({ page, per_page, sort = "createdAt.desc", description, status, slug }: GetPaginatedOrderProps) {
+export async function getPaginatedUserOrders({ page, per_page, sort = "createdAt.desc", description, status, slug }: GetPaginatedOrderProps) {
   const session = await auth();
 
   if (!session?.user?.id) throw new Error("Unauthorized!");
@@ -56,10 +56,7 @@ export async function getPaginatedOrders({ page, per_page, sort = "createdAt.des
       },
     }),
     prisma.order.count({
-      where: {
-        pharmacy: { userId: session.user.id },
-        description: description ? { contains: description } : undefined,
-      },
+      where: filters,
     }),
   ]);
 

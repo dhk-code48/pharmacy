@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
-import { PaginatedOrder } from "@/types";
 import { OrderStatus, Prisma } from "@prisma/client";
 import { z } from "zod";
 
@@ -17,7 +16,7 @@ type GetPaginatedOrderProps = z.infer<typeof paginatedOrderSchema> & {
   slug?: string;
 };
 
-export async function getPaginatedOrders({ page, per_page, sort, description, status, slug }: GetPaginatedOrderProps) {
+export async function getPaginatedPharmacyOrders({ page, per_page, sort, description, status, slug }: GetPaginatedOrderProps) {
   const session = await auth();
 
   if (!session?.user) throw new Error("Unauthorized!!");
@@ -33,7 +32,7 @@ export async function getPaginatedOrders({ page, per_page, sort, description, st
   const statuses = (status?.split(".") as (keyof typeof OrderStatus)[]) ?? [];
 
   // Fetch orders of the specific user
-  const orders: PaginatedOrder[] = await prisma.order.findMany({
+  const orders = await prisma.order.findMany({
     skip: offset,
     take: per_page,
     where: {
@@ -51,7 +50,11 @@ export async function getPaginatedOrders({ page, per_page, sort, description, st
           medicines: true,
         },
       },
-      user: true,
+      user: {
+        include: {
+          address: true,
+        },
+      },
       pharmacy: {
         include: {
           address: true,
@@ -67,8 +70,12 @@ export async function getPaginatedOrders({ page, per_page, sort, description, st
 
   const totalOrders = await prisma.order.count({
     where: {
-      userId: session.user.id,
+      pharmacySlug: slug,
+      pharmacy: {
+        userId: session.user.id,
+      },
       description: description ? { contains: description } : undefined,
+      status: statuses.length > 0 ? { in: statuses } : undefined, // Only apply the status filter if statuses is not empty
     },
   });
 

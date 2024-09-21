@@ -17,15 +17,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { MoreHorizontalIcon } from "lucide-react";
 import { toast } from "sonner";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { default as InvoiceUi } from "@/components/shared/Invoice";
-import { PaginatedOrder } from "@/types";
+import { PaginatedUserOrder } from "@/types";
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/shared/Icons";
 import cancelOrder from "@/actions/user/cancelOrder";
 
-export function CellAction({ order }: { order: PaginatedOrder }) {
+export function CellAction({ order }: { order: PaginatedUserOrder }) {
   const router = useRouter();
   async function onCancel(id: number) {
     const isDelete = confirm("Do you really want to cancel this order");

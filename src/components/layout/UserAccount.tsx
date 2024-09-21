@@ -27,7 +27,7 @@ export function UserAccount() {
     return (
       <Drawer.Root open={open} onClose={closeDrawer}>
         <Drawer.Trigger onClick={() => setOpen(true)}>
-          <UserAvatar user={session.user} className="size-9 border" />
+          <UserAvatar name={session.user.name} image={session.user.image} className="size-9 border" />
         </Drawer.Trigger>
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 z-40 h-full bg-background/80 backdrop-blur-sm" onClick={closeDrawer} />
@@ -83,7 +83,7 @@ export function UserAccount() {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger>
-        <UserAvatar user={session.user} className="size-8 border" />
+        <UserAvatar name={session.user.name} image={session.user.image} className="size-8 border" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <div className="flex items-center justify-start gap-2 p-2">

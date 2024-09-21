@@ -37,7 +37,6 @@ export function DataTableFilterResetButton<TData>({ table, value: _value }: Data
         column?.setFilterValue(undefined);
         updatePageSearchParams({ [value]: null });
       }}
-      asChild
     >
       {/* REMINDER: `AccordionTrigger` is also a button(!) and we get Hydration error when rendering button within button */}
       <div role="button">

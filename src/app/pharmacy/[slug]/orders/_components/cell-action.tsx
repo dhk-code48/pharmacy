@@ -19,11 +19,11 @@ import { default as InvoiceUi } from "@/components/shared/Invoice";
 import PrescriptionImages from "@/components/layout/PrescriptionImages";
 import markOutOfStock from "@/actions/pharmacy/markOutOfStock";
 import UserInfo from "@/components/layout/UserInfo";
-import { PaginatedOrder } from "@/types";
+import { PaginatedPharmacyOrder } from "@/types";
 import { Icons } from "@/components/shared/Icons";
 import { useRouter } from "next/navigation";
 
-export function CellAction({ order }: { order: PaginatedOrder }) {
+export function CellAction({ order }: { order: PaginatedPharmacyOrder }) {
   const router = useRouter();
 
   return (

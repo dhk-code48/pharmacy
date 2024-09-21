@@ -1,7 +1,12 @@
 import getPharmacyOrder from "@/actions/pharmacy/getOrder";
+import { getPaginatedPharmacyOrders } from "@/actions/pharmacy/getPaginatedOrders";
+import { getPaginatedFeedBack } from "@/actions/superadmin/getPaginatedFeedBack";
+import { getPaginatedPharmacies } from "@/actions/superadmin/getPaginatedPharmacies";
+import { getPaginatedUsers } from "@/actions/superadmin/getPaginatedUsers";
 import getUserOrder from "@/actions/user/getOrder";
+import { getPaginatedUserOrders } from "@/actions/user/getPaginatedOrders";
 import { Icons } from "@/components/shared/Icons";
-import { PharmacyAddress, Invoice, Media, Medicine, Order, Pharmacy, Prescription, User, UserRole } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 import { gerNearestPharmacy } from "@prisma/client/sql";
 
 export type IconNames = keyof typeof Icons;
@@ -24,12 +29,6 @@ export interface Location {
 export type GeolocationContextValue = {
   location: Location | null;
   error: string | null;
-};
-export type PaginatedOrder = Order & {
-  user: User;
-  invoice?: (Invoice & { medicines: Medicine[] }) | null;
-  pharmacy: Pharmacy & { address: PharmacyAddress };
-  prescription: Prescription & { images: Media[] };
 };
 
 // ===== Marketing ===== //
@@ -91,6 +90,7 @@ export type InfoStats = {
 };
 
 export type Notification = {
+  timestamp?: string;
   title: string;
   message: string;
   icon?: string;
@@ -100,3 +100,34 @@ export type Notification = {
 export type NearestPharmacy = gerNearestPharmacy.Result;
 export type UserOrder = Awaited<ReturnType<typeof getUserOrder>>;
 export type PharmacyOrder = Awaited<ReturnType<typeof getPharmacyOrder>>;
+export type PaginatedPharmacy = Awaited<ReturnType<typeof getPaginatedPharmacies>>["data"][0];
+export type PaginatedFeedBack = Awaited<ReturnType<typeof getPaginatedFeedBack>>["data"][0];
+export type PaginatedUser = Awaited<ReturnType<typeof getPaginatedUsers>>["data"][0];
+export type PaginatedPharmacyOrder = Awaited<ReturnType<typeof getPaginatedPharmacyOrders>>["data"][0];
+export type PaginatedUserOrder = Awaited<ReturnType<typeof getPaginatedUserOrders>>["data"][0];
+
+export type RevenueData = {
+  name: string;
+  revenue: number;
+};
+
+export type OrderStatusData = {
+  name: string;
+  value: number;
+};
+
+export type TopSellingMedicine = {
+  name: string;
+  sales: number;
+};
+export type DashboardData = {
+  revenueOverview: RevenueData[];
+  orderStatusDistribution: OrderStatusData[];
+  topSellingMedicines: TopSellingMedicine[];
+};
+export type DashboardSummaryStats = {
+  totalPharmacies: number;
+  totalOrders: number;
+  totalCustomers: number;
+  totalRevenue: number;
+};

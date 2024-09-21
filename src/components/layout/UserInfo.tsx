@@ -1,24 +1,40 @@
-import { User } from "@prisma/client";
+import { User, UserAddress } from "@prisma/client";
 import React, { FC } from "react";
 import { Icons } from "../shared/Icons";
 import { Button } from "../ui/button";
+import { UserAvatar } from "../shared/UserAvatar";
+import { formatAddress } from "@/lib/address";
+import { formatNumber } from "@/lib/utils";
 
-const UserInfo: FC<{ user: User }> = ({ user }) => {
+const UserInfo: FC<{ user: User & { address: UserAddress[] } }> = ({ user }) => {
   return (
     <div className="flex flex-col items-center">
-      <div className="size-14 bg-accent rounded-full border flex items-center justify-center">
-        <Icons.user size={30} />
-      </div>
+      <UserAvatar name={user.name} image={user.image} />
       <h5 className="text-lg font-semibold">{user.name}</h5>
       <div className="flex text-muted-foreground items-center gap-2">
         <Icons.mail size={18} />
         {user.email}
       </div>
-      <div className="grid grid-cols-[50px_1fr] place-items-start my-5 place-content-center text-left">
+      <div className="flex text-muted-foreground items-center gap-2">
         <Icons.phone size={18} />
-        +977 9846115544
-        <Icons.address size={18} />
-        <span className="text-sm">Shuklagandaki-02, Kotre, Tanahun, Gandaki Province</span>
+        {user.phoneNumber}
+      </div>
+      <div className="text-left p-5 w-full">
+        <p className="text-sm">Recent Address Used By User </p>
+        {user.address.length > 0 ? (
+          user.address.map((address, index) => {
+            return (
+              <div key={address.id} className="bg-muted px-5 py-3 rounded-lg">
+                <p className="text-sm font-semibold text-muted-foreground">Id: {formatNumber(index + 1)}</p>
+                <p>Municipality : {formatAddress(address as UserAddress, "{{M}} - {{W}}, {{T}}")}</p>
+                <p>District : {formatAddress(address as UserAddress, "{{D}}")}</p>
+                <p>Province : {formatAddress(address as UserAddress, "{{S}}")}</p>
+              </div>
+            );
+          })
+        ) : (
+          <p className="italic text-muted-foreground text-sm">Not Address Found</p>
+        )}
       </div>
     </div>
   );

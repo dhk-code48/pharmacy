@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import PhoneInputForm from "@/components/forms/PhoneInputForm";
-import { verifyPharmacyOwnerShip } from "@/lib/utils";
 import { UserRole } from "@prisma/client";
 import { redirect } from "next/navigation";
 import React from "react";

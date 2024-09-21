@@ -4,6 +4,7 @@ import React, { Component, ReactNode } from "react";
 import { notFound } from "next/navigation";
 
 import { Button } from "../ui/button";
+import { Icons } from "./Icons";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -42,10 +43,11 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
-        <div className="flex size-full flex-col items-center justify-center space-y-5 py-10">
-          <h1 className="text-xl font-bold">Unexpected Error Ocurred</h1>
+        <div className="grid grid-cols-1 place-items-center gap-2 bg-destructive/10 border-destructive/30 border-dashed border-2 rounded p-5 text-center">
+          <Icons.alertTriangleFilled className="text-destructive" size={30} />
+          <h1 className="text-lg font-bold">Unexpected Error Ocurred</h1>
           <Button type="button" onClick={this.handleRetry}>
-            Try again?
+            Reload <Icons.refresh size={20} />
           </Button>
         </div>
       );

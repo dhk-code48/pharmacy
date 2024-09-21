@@ -4,7 +4,7 @@ export const USER_DASHBOARD_SIDEBAR: SidebarNavItem[] = [
   {
     title: "MENU",
     items: [
-      { href: "", icon: "dashboardFilled", title: "Dashboard" },
+      { href: "/", icon: "dashboardFilled", title: "Dashboard" },
       { href: "/prescriptions", icon: "prescriptionFilled", title: "Prescriptions" },
       { href: "/orders", icon: "cartFilled", title: "Orders" },
     ],

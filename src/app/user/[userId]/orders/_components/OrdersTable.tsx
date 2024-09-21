@@ -7,13 +7,13 @@ import { getColumns } from "./columns";
 import { useDataTable } from "@/hooks/useDataTable";
 import type { DataTableFilterableColumn, DataTableSearchableColumn } from "@/types/data-table";
 import { Media, Order, OrderStatus, PaymentStatus, Pharmacy, Prescription } from "@prisma/client";
-import { getPaginatedOrders } from "@/actions/user/getPaginatedOrders";
-import { PaginatedOrder } from "@/types";
+import { getPaginatedUserOrders } from "@/actions/user/getPaginatedOrders";
+import { PaginatedUserOrder } from "@/types";
 import { Button } from "@/components/ui/button";
 
 /** @learn more about data-table at shadcn ui website @see https://ui.shadcn.com/docs/components/data-table */
 
-const filterableColumns: DataTableFilterableColumn<PaginatedOrder>[] = [
+const filterableColumns: DataTableFilterableColumn<PaginatedUserOrder>[] = [
   {
     id: "status",
     title: "Order Status",
@@ -33,17 +33,17 @@ const filterableColumns: DataTableFilterableColumn<PaginatedOrder>[] = [
 ];
 
 type OrdersTableProps = {
-  membersPromise: ReturnType<typeof getPaginatedOrders>;
+  membersPromise: ReturnType<typeof getPaginatedUserOrders>;
 };
 
-const searchableColumns: DataTableSearchableColumn<PaginatedOrder>[] = [{ id: "description", placeholder: "Search description..." }];
+const searchableColumns: DataTableSearchableColumn<PaginatedUserOrder>[] = [{ id: "description", placeholder: "Search description..." }];
 
 export function OrdersTable({ membersPromise }: OrdersTableProps) {
   const { data, pageCount, total } = React.use(membersPromise);
 
-  const columns = useMemo<ColumnDef<PaginatedOrder, unknown>[]>(() => getColumns(), []);
+  const columns = useMemo<ColumnDef<PaginatedUserOrder, unknown>[]>(() => getColumns(), []);
 
-  const orderOrder: PaginatedOrder[] = data;
+  const orderOrder: PaginatedUserOrder[] = data;
 
   const { table } = useDataTable({
     data: orderOrder,

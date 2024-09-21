@@ -1,9 +1,11 @@
-import verifyPharmacy from "@/actions/pharmacy/verifyPharmacy";
+import verifyPharmacyStatus from "@/actions/pharmacy/verifyPharmacyStatus";
 import { auth } from "@/auth";
 import BottomTab from "@/components/layout/BottomTab";
+import { NotificationsDialog } from "@/components/layout/NotificationsDialog";
 import { Sidebar, MobileSheetSidebar } from "@/components/layout/Sidebar";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { UserAccount } from "@/components/layout/UserAccount";
+import PharmacyNotVerified from "@/components/sections/dashboard/PharmacyNotVerified";
 import { SearchCommand } from "@/components/sections/SearchCommand";
 import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
 import { buttonVariants } from "@/components/ui/button";
@@ -21,10 +23,16 @@ interface UserLayoutProps {
 }
 const PharmacyLayout = async ({ children, params }: UserLayoutProps) => {
   const session = await auth();
-  if (!session) redirect("/login");
+  if (!session?.user.id) redirect("/login");
 
   checkForUser(session);
   verifyPharmacyOwnerShip(session, params.slug);
+
+  const isVerified = await verifyPharmacyStatus(session.user.id, params.slug);
+
+  // if (!isVerified) {
+  //   return <PharmacyNotVerified />;
+  // }
 
   return (
     <div className="relative flex min-h-screen w-full">
@@ -38,16 +46,13 @@ const PharmacyLayout = async ({ children, params }: UserLayoutProps) => {
               <SearchCommand prefix={`/pharmacy/${params.slug}`} links={PHARMACY_DASHBOARD_SIDEBAR} />
             </div>
 
-            <Link href={`/user/${session.user.id}`} className={buttonVariants({ size: "sm", variant: "ghost" })}>
-              Switch To User
-            </Link>
-            <ThemeToggle />
+            <NotificationsDialog userId={session.user.id} />
             <UserAccount />
           </MaxWidthWrapper>
         </header>
         <main className="flex-1 p-4 xl:px-8">
           <MaxWidthWrapper className="flex mx-auto h-full max-w-7xl flex-col gap-4 px-0 lg:gap-6 pt-14 md:pt-0" large>
-            {children}
+            <>{isVerified ? children : <PharmacyNotVerified />}</>
           </MaxWidthWrapper>
         </main>
       </div>{" "}

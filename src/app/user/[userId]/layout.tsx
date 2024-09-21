@@ -8,7 +8,7 @@ import { SearchCommand } from "@/components/sections/SearchCommand";
 import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
 import { buttonVariants } from "@/components/ui/button";
 import { USER_DASHBOARD_BOTTOM_TAB, USER_DASHBOARD_SIDEBAR } from "@/config/userDashboard";
-import { checkForPharmacy, verifyUserOwnerShip } from "@/lib/utils";
+import { checkForPharmacy, verifySuperAdminOwnerShip, verifyUserOwnerShip } from "@/lib/utils";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -26,6 +26,7 @@ const UserLayout = async ({ children, params }: UserLayoutProps) => {
 
   checkForPharmacy(session);
   verifyUserOwnerShip(session, params.userId);
+  verifySuperAdminOwnerShip(session);
 
   if (!session?.user.phoneNumber) {
     return <PhoneInputForm session={session} />;
@@ -58,16 +59,12 @@ const UserLayout = async ({ children, params }: UserLayoutProps) => {
             </MaxWidthWrapper>
           </header>
           <main className="flex-1 p-4 xl:px-8">
-            <MaxWidthWrapper className="flex mx-auto h-full max-w-7xl flex-col gap-4 px-0 lg:gap-6" large>
+            <MaxWidthWrapper className="flex mt-14 md:mt-0 mx-auto h-full max-w-7xl flex-col gap-4 px-0 lg:gap-6" large>
               {children}
             </MaxWidthWrapper>
           </main>
         </div>
-        <BottomTab
-          links={USER_DASHBOARD_BOTTOM_TAB}
-          prefix={`/user/${params.userId}`}
-          action={<MobileSheetSidebar user={session.user} links={USER_DASHBOARD_SIDEBAR} prefix={`/user/${params.userId}`} />}
-        />
+        <BottomTab links={USER_DASHBOARD_BOTTOM_TAB} prefix={`/user/${params.userId}`} />
       </div>
     </>
   );

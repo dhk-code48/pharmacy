@@ -4,13 +4,13 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { CellAction } from "./cell-action";
 import { formatDate } from "@/lib/format";
 import { ORDER_STATUS_COLOR, PAYMENT_STATUS } from "@/config";
-import { PaginatedOrder } from "@/types";
+import { PaginatedPharmacyOrder } from "@/types";
 
-export function getColumns(): ColumnDef<PaginatedOrder>[] {
+export function getColumns(): ColumnDef<PaginatedPharmacyOrder>[] {
   return columns;
 }
 
-export const columns: ColumnDef<PaginatedOrder>[] = [
+export const columns: ColumnDef<PaginatedPharmacyOrder>[] = [
   {
     accessorKey: "id",
     header: "Order Id",

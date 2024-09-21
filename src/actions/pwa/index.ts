@@ -1,10 +1,9 @@
 "use server";
 
 import { auth } from "@/auth";
-import { data } from "@/components/data-table/constants";
 import { prisma } from "@/lib/db";
+import { redis } from "@/lib/redis";
 import { Notification } from "@/types";
-import { PushSubscription as DbPushSubscription } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import webpush from "web-push";
 
@@ -59,10 +58,17 @@ export async function unsubscribeUser({ sub, userAgent }: { sub: PushSubscriptio
   revalidatePath("/");
   return oldSubscription;
 }
-export async function sendNotification(userId: string, notificationBody: Notification) {
+export async function sendNotification(userId: string | string[], notificationBody: Notification) {
+  // Normalize userId into an array if it's not already one
+  const userIds = Array.isArray(userId) ? userId : [userId];
+
   // Fetch all subscriptions for the user
   const subscriptions = await prisma.pushSubscription.findMany({
-    where: { userId },
+    where: {
+      userId: {
+        in: userIds,
+      },
+    },
   });
 
   if (!subscriptions || subscriptions.length === 0) {
@@ -71,6 +77,19 @@ export async function sendNotification(userId: string, notificationBody: Notific
   }
 
   try {
+    // Store notification in Redis with expiration (30 days = 2592000 seconds)
+    const redisPromise = await redis.zadd(
+      `user:${userId}:notifications`,
+      Date.now(),
+      JSON.stringify({
+        title: notificationBody.title,
+        message: notificationBody.message,
+        icon: notificationBody?.icon || "/icon.png",
+        url: notificationBody?.url || "/",
+        timestamp: Date.now(),
+      })
+    );
+
     // Send notification to all subscriptions concurrently
     const notificationPromises = subscriptions.map(async (sub) => {
       if (sub.endPoint) {
@@ -90,6 +109,7 @@ export async function sendNotification(userId: string, notificationBody: Notific
               url: notificationBody?.url || "/",
             })
           );
+
           return { success: true, subscription: sub };
         } catch (error) {
           console.error(`Error sending notification to subscription ${sub.endPoint}:`, error);
@@ -97,9 +117,13 @@ export async function sendNotification(userId: string, notificationBody: Notific
         }
       }
     });
+    const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+
+    // Remove all notifications older than 30 days
+    const expireOld = await redis.zremrangebyscore(`user:${userId}:notifications`, 0, thirtyDaysAgo);
 
     // Wait for all notifications to be sent
-    const results = await Promise.all(notificationPromises);
+    const [results] = await Promise.all([notificationPromises, redisPromise, expireOld]);
 
     return results; // Return an array of results for each subscription
   } catch (error) {

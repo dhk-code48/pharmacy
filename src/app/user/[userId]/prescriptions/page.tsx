@@ -6,6 +6,7 @@ import { SearchParams } from "@/types/data-table";
 import React, { Suspense } from "react";
 import * as z from "zod";
 import { PrescriptionsTable } from "./_components/PrescriptionTable";
+import AppHeader from "@/components/layout/AppHeader";
 
 type PageProps = {
   searchParams: SearchParams;
@@ -29,9 +30,11 @@ const SuspensePage = ({ searchParams }: PageProps) => {
   );
 };
 
-const UserPrescriptionsPage = ({ searchParams }: PageProps) => {
+const UserPrescriptionsPage = ({ searchParams, params }: PageProps & { params: { userId: string } }) => {
   return (
     <div className="space-y-5">
+      <AppHeader redirectId={params.userId} title="Prescriptions" type="user" />
+
       <AppBreadcrumb items={[{ href: "#", label: "Prescriptions" }]} />
       <ErrorBoundary>
         <Suspense fallback={<Skeleton className="size-full" />}>

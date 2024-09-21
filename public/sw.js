@@ -6,11 +6,15 @@ self.addEventListener("push", function (event) {
       icon: data.icon || "/icon.png",
       badge: "/badge.png",
       vibrate: [100, 50, 100],
+      sound: "/public/sounds/notification.mp3",
       data: {
         dateOfArrival: Date.now(),
         primaryKey: "2",
       },
     };
+    const audio = new Audio(options.sound);
+    audio.play();
+
     event.waitUntil(self.registration.showNotification(data.title, options));
   }
 });

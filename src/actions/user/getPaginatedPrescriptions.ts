@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
-import { PaginatedOrder } from "@/types";
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
 
@@ -43,10 +42,11 @@ export async function getPaginatedPrescriptions({ page, per_page, sort, descript
     },
   });
 
-  const totalPrescriptions = await prisma.order.count({
+  const totalPrescriptions = await prisma.prescription.count({
     where: {
       userId: session.user.id,
       description: description ? { contains: description } : undefined,
+      label: label ? { contains: label } : undefined,
     },
   });
 
