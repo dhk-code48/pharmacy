@@ -14,7 +14,6 @@ const BottomTab = ({ links, prefix = "", action }: { links: SidebarLinks[]; pref
           const Icon = Icons[link.icon || "arrowRight"];
           const href = prefix + link.href;
           const isActive = pathName === href;
-          console.log("HREF => ", href);
           return (
             <Link
               key={"bottom-tab-" + index}

@@ -58,16 +58,13 @@ export async function unsubscribeUser({ sub, userAgent }: { sub: PushSubscriptio
   revalidatePath("/");
   return oldSubscription;
 }
-export async function sendNotification(userId: string | string[], notificationBody: Notification) {
+export async function sendNotification(userId: string, notificationBody: Notification) {
   // Normalize userId into an array if it's not already one
-  const userIds = Array.isArray(userId) ? userId : [userId];
 
   // Fetch all subscriptions for the user
   const subscriptions = await prisma.pushSubscription.findMany({
     where: {
-      userId: {
-        in: userIds,
-      },
+      userId,
     },
   });
 
@@ -77,6 +74,7 @@ export async function sendNotification(userId: string | string[], notificationBo
   }
 
   try {
+    console.log("Sending Notification");
     // Store notification in Redis with expiration (30 days = 2592000 seconds)
     const redisPromise = await redis.zadd(
       `user:${userId}:notifications`,
@@ -123,7 +121,7 @@ export async function sendNotification(userId: string | string[], notificationBo
     const expireOld = await redis.zremrangebyscore(`user:${userId}:notifications`, 0, thirtyDaysAgo);
 
     // Wait for all notifications to be sent
-    const [results] = await Promise.all([notificationPromises, redisPromise, expireOld]);
+    const [results] = await Promise.all([Promise.all(notificationPromises), redisPromise, expireOld]);
 
     return results; // Return an array of results for each subscription
   } catch (error) {

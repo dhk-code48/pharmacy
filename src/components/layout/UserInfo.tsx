@@ -1,12 +1,11 @@
 import { User, UserAddress } from "@prisma/client";
 import React, { FC } from "react";
 import { Icons } from "../shared/Icons";
-import { Button } from "../ui/button";
 import { UserAvatar } from "../shared/UserAvatar";
 import { formatAddress } from "@/lib/address";
 import { formatNumber } from "@/lib/utils";
 
-const UserInfo: FC<{ user: User & { address: UserAddress[] } }> = ({ user }) => {
+const UserInfo: FC<{ user: User; addresses: UserAddress[] }> = ({ user, addresses }) => {
   return (
     <div className="flex flex-col items-center">
       <UserAvatar name={user.name} image={user.image} />
@@ -20,9 +19,9 @@ const UserInfo: FC<{ user: User & { address: UserAddress[] } }> = ({ user }) => 
         {user.phoneNumber}
       </div>
       <div className="text-left p-5 w-full">
-        <p className="text-sm">Recent Address Used By User </p>
-        {user.address.length > 0 ? (
-          user.address.map((address, index) => {
+        <p className="text-sm">{addresses.length > 1 ? "Recent Address Used By User" : "User Address"} </p>
+        {addresses.length > 0 ? (
+          addresses.map((address, index) => {
             return (
               <div key={address.id} className="bg-muted px-5 py-3 rounded-lg">
                 <p className="text-sm font-semibold text-muted-foreground">Id: {formatNumber(index + 1)}</p>

@@ -16,7 +16,7 @@ export const USER_DASHBOARD_SIDEBAR: SidebarNavItem[] = [
 ];
 
 export const USER_DASHBOARD_BOTTOM_TAB: SidebarLinks[] = [
-  { href: "", icon: "dashboardFilled", title: "Dashboard" },
+  { href: "/", icon: "dashboardFilled", title: "Dashboard" },
   { href: "/prescriptions", icon: "prescriptionFilled", title: "Prescriptions" },
   { href: "/orders", icon: "cartFilled", title: "Orders" },
 ];

@@ -1,6 +1,6 @@
 "use server";
 
-import { PharmacySettingFormValues } from "@/app/pharmacy/[slug]/settings/_components/PharmacyForm";
+import { PharmacySettingFormValues } from "@/app/(protected)/pharmacy/(routes)/[slug]/(routes)/settings/_components/PharmacyForm";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";

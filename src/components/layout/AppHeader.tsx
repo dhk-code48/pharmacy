@@ -12,10 +12,10 @@ const AppHeader = ({ type, redirectId, title }: { type: "pharmacy" | "user" | "s
   const settingsHref = type === "superAdmin" ? "/superAdmin/settings" : `/${type}/${redirectId}/settings`;
   const notificationHref = type === "superAdmin" ? "/superAdmin/notifications" : `/${type}/${redirectId}/notifications`;
   return (
-    <MaxWidthWrapper className="flex items-center justify-between mx-auto font-semibold md:hidden h-14 border-b fixed inset-0 bg-accent text-accent-foreground">
+    <MaxWidthWrapper className="flex z-30 items-center justify-between mx-auto font-semibold md:hidden h-14 border-b fixed inset-0 bg-accent text-accent-foreground">
       <MobileSheetSidebar
         links={type === "pharmacy" ? PHARMACY_DASHBOARD_SIDEBAR : type === "superAdmin" ? SUPER_ADMIN_DASHBOARD_SIDEBAR : USER_DASHBOARD_SIDEBAR}
-        prefix={`/${type}`}
+        prefix={`/${type}/${redirectId}`}
       />
       {title}
       <div>

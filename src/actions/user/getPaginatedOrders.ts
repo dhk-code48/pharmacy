@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { PaginatedUserOrder } from "@/types";
-import { OrderStatus, Prisma } from "@prisma/client";
+import { OrderStatus, PaymentStatus, Prisma } from "@prisma/client";
 import { z } from "zod";
 
 // Input validation schema
@@ -11,13 +11,19 @@ const paginatedOrderSchema = z.object({
   sort: z.string().optional(),
   description: z.string().optional(),
   status: z.string().optional(),
+  invoice: z.string().optional(),
 });
 
-type GetPaginatedOrderProps = z.infer<typeof paginatedOrderSchema> & {
-  slug?: string;
-};
+type GetPaginatedOrderProps = z.infer<typeof paginatedOrderSchema>;
 
-export async function getPaginatedUserOrders({ page, per_page, sort = "createdAt.desc", description, status, slug }: GetPaginatedOrderProps) {
+export async function getPaginatedUserOrders({
+  page,
+  per_page,
+  sort = "createdAt.desc",
+  invoice: paymentStatus,
+  description,
+  status,
+}: GetPaginatedOrderProps) {
   const session = await auth();
 
   if (!session?.user?.id) throw new Error("Unauthorized!");
@@ -27,11 +33,13 @@ export async function getPaginatedUserOrders({ page, per_page, sort = "createdAt
   const [column = "createdAt", order = "desc"] = sort.split(".") as [keyof Prisma.OrderOrderByWithRelationInput, "asc" | "desc"];
 
   const statuses = status?.split(".") as OrderStatus[] | undefined;
+  const paymentStatuses = paymentStatus?.split(".") as PaymentStatus[] | undefined;
 
   // Consolidate filters into a single object
   const filters = {
-    pharmacySlug: slug,
-    pharmacy: { userId: session.user.id },
+    invoice: {
+      paymentStatus: paymentStatuses?.length ? { in: paymentStatuses } : undefined,
+    },
     description: description ? { contains: description } : undefined,
     status: statuses?.length ? { in: statuses } : undefined,
   };

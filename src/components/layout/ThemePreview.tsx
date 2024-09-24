@@ -6,7 +6,7 @@ import { Checkbox } from "../ui/checkbox";
 const ThemePreview = ({ type }: { type: "light" | "dark" | "system" }) => {
   const { setTheme, theme } = useTheme();
   return (
-    <div className="border rounded overflow-hidden cursor-pointer relative" onClick={() => setTheme(type)}>
+    <div className="border z-10 rounded overflow-hidden cursor-pointer relative" onClick={() => setTheme(type)}>
       <div className="absolute bottom-0 left-1">
         <Checkbox checked={theme === type} />
       </div>

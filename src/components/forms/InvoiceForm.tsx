@@ -58,7 +58,7 @@ const InvoiceForm: FC<FormProps> = ({ prescription, triggerClassName, pharmacyId
 
   const onSubmit = (values: InvoiceFormValues) => {
     startTransition(async () => {
-      toast.promise(createInvoice(values, pharmacyId, orderId, prescription.userId), {
+      toast.promise(createInvoice(values, pharmacyId, orderId), {
         loading: "Creating Invoice....",
         error: "Unexpected Error Occurred, Try Again!!",
         success: () => {

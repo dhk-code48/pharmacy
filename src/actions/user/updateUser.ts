@@ -1,6 +1,6 @@
 "use server";
 
-import { UserSettingFormValues } from "@/app/user/[userId]/settings/_components/UserForm";
+import { UserSettingFormValues } from "@/app/(protected)/user/[userId]/(routes)/settings/_components/UserForm";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 

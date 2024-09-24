@@ -2,7 +2,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { sendNotification } from "../pwa";
-import { PrescriptionUploadFormValues } from "@/components/forms/order/PrescriptionUploadCard";
+import { PrescriptionUploadFormValues } from "@/components/forms/order/PrescriptionUploadDialog";
 import { Location } from "@/types";
 
 export default async function createPrescription(

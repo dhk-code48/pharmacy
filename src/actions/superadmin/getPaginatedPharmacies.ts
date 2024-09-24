@@ -41,6 +41,7 @@ export async function getPaginatedPharmacies({ page, per_page, sort = "createdAt
       where: filters,
       orderBy: { [column]: order },
       include: {
+        address: true,
         user: true,
       },
     }),

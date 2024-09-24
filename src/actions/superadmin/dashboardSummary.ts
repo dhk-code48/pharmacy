@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 import { DashboardSummaryStats } from "@/types";
 import { cache } from "react";
 
-export const getDashboardSummary = cache(async (timeRange: "week" | "month" | "year" | "all"): Promise<DashboardSummaryStats> => {
+export const getDashboardSummary = cache(async (timeRange: "week" | "month" | "year" | "all", slug?: string): Promise<DashboardSummaryStats> => {
   const currentDate = new Date();
   let startDate: Date | undefined;
 
@@ -26,12 +26,19 @@ export const getDashboardSummary = cache(async (timeRange: "week" | "month" | "y
   try {
     const stats = await prisma.$transaction(async (tx) => {
       const [totalPharmacies, totalOrders, totalCustomers, revenueSum] = await Promise.all([
-        tx.pharmacy.count(),
+        tx.pharmacy.count({
+          where: {
+            status: "VERIFIED",
+          },
+        }),
         tx.order.count({
           where: startDate
             ? {
                 createdAt: {
                   gte: startDate,
+                },
+                pharmacy: {
+                  slug: slug ? { equals: slug } : undefined,
                 },
               }
             : undefined,
@@ -43,6 +50,9 @@ export const getDashboardSummary = cache(async (timeRange: "week" | "month" | "y
               ? {
                   createdAt: {
                     gte: startDate,
+                  },
+                  pharmacy: {
+                    slug: slug ? { equals: slug } : undefined,
                   },
                 }
               : {}),
@@ -56,6 +66,9 @@ export const getDashboardSummary = cache(async (timeRange: "week" | "month" | "y
             ? {
                 createdAt: {
                   gte: startDate,
+                },
+                pharmacy: {
+                  slug: slug ? { equals: slug } : undefined,
                 },
               }
             : {},
@@ -74,7 +87,5 @@ export const getDashboardSummary = cache(async (timeRange: "week" | "month" | "y
   } catch (error) {
     console.error("Error fetching summary stats:", error);
     throw new Error("Failed to fetch summary statistics");
-  } finally {
-    await prisma.$disconnect();
   }
 });

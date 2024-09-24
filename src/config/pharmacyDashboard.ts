@@ -4,8 +4,9 @@ export const PHARMACY_DASHBOARD_SIDEBAR: SidebarNavItem[] = [
   {
     title: "MENU",
     items: [
-      { href: "", icon: "dashboard", title: "Dashboard" },
+      { href: "/", icon: "dashboard", title: "Dashboard" },
       { href: "/orders", icon: "cart", title: "Orders" },
+      { href: "/reviews", icon: "star", title: "Reviews" },
     ],
   },
   {
@@ -15,7 +16,7 @@ export const PHARMACY_DASHBOARD_SIDEBAR: SidebarNavItem[] = [
 ];
 export const PHARMACY_DASHBOARD_BOTTOM_TAB: SidebarLinks[] = [
   {
-    href: "",
+    href: "/",
     title: "Dashboard",
     icon: "dashboard",
   },

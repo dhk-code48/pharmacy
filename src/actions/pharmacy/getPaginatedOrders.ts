@@ -50,11 +50,8 @@ export async function getPaginatedPharmacyOrders({ page, per_page, sort, descrip
           medicines: true,
         },
       },
-      user: {
-        include: {
-          address: true,
-        },
-      },
+      userAddress: true,
+      user: true,
       pharmacy: {
         include: {
           address: true,

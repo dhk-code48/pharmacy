@@ -5,7 +5,7 @@ import { InvoiceFormValues } from "@/components/forms/InvoiceForm";
 import { prisma } from "@/lib/db";
 import { sendNotification } from "../pwa";
 
-export default async function createInvoice(values: InvoiceFormValues, pharmacyId: number, orderId: number, customerId: string) {
+export default async function createInvoice(values: InvoiceFormValues, pharmacyId: number, orderId: number) {
   const session = await auth();
 
   // Check if the user is authenticated
@@ -38,7 +38,7 @@ export default async function createInvoice(values: InvoiceFormValues, pharmacyI
   const shippingPrice = calculateShippingPrice(subtotal);
   const total = calculateTotal(subtotal, tax, shippingPrice);
 
-  // Perform both order update and invoice creation in a transaction
+  // Perform both order upda
   const result = await prisma.$transaction([
     // Update order status
     prisma.order.update({
@@ -78,16 +78,15 @@ export default async function createInvoice(values: InvoiceFormValues, pharmacyI
     }),
   ]);
 
-  sendNotification(customerId, {
-    message: `Dear, user invoice is provided for O-${orderId}`,
-    title: `Click to view more`,
-    url: `${process.env.PUBLIC_URL || "https://localhost:3000"}/user/${customerId}/orders/${orderId}`,
-    icon: "/icons/order.png",
-  });
-
   if (!result) {
     throw new Error("Failed to complete the transaction.");
   }
+  sendNotification(result[1].userId, {
+    message: `Dear, user invoice is provided for O-${orderId}`,
+    title: `Click to view more`,
+    url: `${process.env.PUBLIC_URL || "https://localhost:3000"}/user/${result[1].userId}/orders/${orderId}`,
+    icon: "/icons/order.png",
+  });
 
-  return result[1]; // Return the created invoice
+  return result[1].userId; // Return the created invoice
 }

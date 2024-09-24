@@ -7,6 +7,9 @@ import { Skeleton } from "../ui/skeleton";
 import { fetchPharmacies } from "@/actions/getPharmaciesForMap";
 import { Pharmacy, PharmacyLocation } from "@prisma/client";
 import { useGeolocation } from "@/providers/GeoLocationProvider";
+import { StarInput } from "../ui/rating";
+import { useTheme } from "next-themes";
+import { DashboardHeading } from "../sections/dashboard/DashboardHeading";
 
 interface PharmacyMapProps {
   loading?: boolean;
@@ -19,8 +22,8 @@ const PharmacyMap: React.FC<PharmacyMapProps> = ({ loading = false }) => {
 
   // Custom marker icon
   const markerIcon = new L.Icon({
-    iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-    iconSize: [25, 41],
+    iconUrl: "/icons/pharmacy-building.png",
+    iconSize: [42, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
@@ -77,21 +80,26 @@ const PharmacyMap: React.FC<PharmacyMapProps> = ({ loading = false }) => {
 
   const defaultCenter: L.LatLngTuple = location ? [location.latitude, location.longitude] : [28.3949, 84.124];
 
+  const { resolvedTheme } = useTheme();
+  const isDarkMode = resolvedTheme === "dark";
+
   return (
     <>
+      <DashboardHeading heading="Explore Pharmacies On Map" text="All of our partner andd verified pharmacies are shown below in map" />
       {loading ? (
         <Skeleton className="w-full h-80" />
       ) : (
-        <MapContainer center={defaultCenter} zoom={13} style={{ height: "320px", width: "100%" }}>
+        <MapContainer center={defaultCenter} className="z-40" zoom={13} style={{ height: "320px", width: "100%" }}>
           <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url={isDarkMode ? "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"}
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
           <LocationMarker />
           {pharmacies.map((pharmacy, index) => (
             <Marker key={index} position={[pharmacy.location.latitude, pharmacy.location.longitude]} icon={markerIcon}>
               <Popup>
-                <b>{pharmacy.name}</b>
+                <strong>{pharmacy.name}</strong>
+                <StarInput variant="yellow" rating={pharmacy.averageRating} disabled />
               </Popup>
             </Marker>
           ))}

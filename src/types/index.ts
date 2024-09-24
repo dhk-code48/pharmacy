@@ -1,3 +1,4 @@
+import { getPaginatedReviews } from "@/actions/getPaginatedReviews";
 import getPharmacyOrder from "@/actions/pharmacy/getOrder";
 import { getPaginatedPharmacyOrders } from "@/actions/pharmacy/getPaginatedOrders";
 import { getPaginatedFeedBack } from "@/actions/superadmin/getPaginatedFeedBack";
@@ -6,8 +7,7 @@ import { getPaginatedUsers } from "@/actions/superadmin/getPaginatedUsers";
 import getUserOrder from "@/actions/user/getOrder";
 import { getPaginatedUserOrders } from "@/actions/user/getPaginatedOrders";
 import { Icons } from "@/components/shared/Icons";
-import { UserRole } from "@prisma/client";
-import { gerNearestPharmacy } from "@prisma/client/sql";
+import { Pharmacy, UserRole } from "@prisma/client";
 
 export type IconNames = keyof typeof Icons;
 
@@ -97,10 +97,11 @@ export type Notification = {
   url?: string;
 };
 
-export type NearestPharmacy = gerNearestPharmacy.Result;
+export type NearestPharmacy = Pharmacy & { distance: number };
 export type UserOrder = Awaited<ReturnType<typeof getUserOrder>>;
 export type PharmacyOrder = Awaited<ReturnType<typeof getPharmacyOrder>>;
 export type PaginatedPharmacy = Awaited<ReturnType<typeof getPaginatedPharmacies>>["data"][0];
+export type PaginatedReview = Awaited<ReturnType<typeof getPaginatedReviews>>["data"][0];
 export type PaginatedFeedBack = Awaited<ReturnType<typeof getPaginatedFeedBack>>["data"][0];
 export type PaginatedUser = Awaited<ReturnType<typeof getPaginatedUsers>>["data"][0];
 export type PaginatedPharmacyOrder = Awaited<ReturnType<typeof getPaginatedPharmacyOrders>>["data"][0];

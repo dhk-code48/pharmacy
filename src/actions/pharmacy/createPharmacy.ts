@@ -50,12 +50,14 @@ export async function createPharmacy(values: PharmacyFormValues) {
     },
     select: { id: true },
   });
-  const superAdminsId = superAdmins.map(({ id }) => id);
-  sendNotification(superAdminsId, {
-    message: "New pharmacy have been created",
-    title: `${session.user.name} have create a pharmacy, go and review`,
-    icon: "/icons/pharmacy.png",
-    url: "/superAdmin/pharmacy",
+
+  superAdmins.map(async ({ id }) => {
+    sendNotification(id, {
+      message: "New pharmacy have been created",
+      title: `${session.user.name} have create a pharmacy, go and review`,
+      icon: "/icons/pharmacy.png",
+      url: "/superAdmin/pharmacy",
+    });
   });
 
   revalidatePath("/");

@@ -1,5 +1,5 @@
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -40,6 +40,7 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
 }
 
 model PushSubscription {
@@ -55,6 +56,8 @@ model PushSubscription {
   status    SubscriptionStatus @default(ACTIVE) // Enum for subscription status
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
+
+  @@index([userId])
 }
 
 model Account {
@@ -117,6 +120,8 @@ model UserAddress {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model UserLocation {
@@ -128,7 +133,8 @@ model UserLocation {
   addressId Int         @unique
   address   UserAddress @relation(fields: [addressId], references: [id])
 
-  @@index([latitude, longitude], name: "location_index")
+  @@index([latitude, longitude], name: "user_location_index")
+  
 }
 
 model PharmacyAddress {
@@ -143,6 +149,7 @@ model PharmacyAddress {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
 }
 
 model Pharmacy {
@@ -157,6 +164,8 @@ model Pharmacy {
   invoices    Invoice[]
   medicines   Medicine[]
 
+  averageRating Float @default(0) // Add this field
+
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
 
@@ -168,6 +177,11 @@ model Pharmacy {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  
+  @@index([status])
+  @@index([averageRating])
+  @@index([userId])
 }
 
 model PharmacyLocation {
@@ -178,7 +192,7 @@ model PharmacyLocation {
 
   pharmacy Pharmacy?
 
-  @@index([latitude, longitude], name: "location_index")
+  @@index([latitude, longitude], name: "pharmacy_location_index")
 }
 
 model Review {
@@ -195,6 +209,9 @@ model Review {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([pharmacyId, rating])
+  @@index([userId, createdAt])
 }
 
 model Order {
@@ -221,6 +238,10 @@ model Order {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([pharmacySlug, status])
+  @@index([createdAt])
 }
 
 model Invoice {
@@ -246,6 +267,11 @@ model Invoice {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  
+  @@index([userId, paymentStatus])
+  @@index([pharmacyId, paymentStatus])
+  @@index([createdAt])
 }
 
 model Medicine {
@@ -264,6 +290,10 @@ model Medicine {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([pharmacyId, name])
+  @@index([price])
+
 }
 
 model Prescription {
@@ -280,7 +310,7 @@ model Prescription {
 
   orders Order[]
 
-  @@index([userId])
+  @@index([userId, createdAt])
 }
 
 model Media {
@@ -300,6 +330,9 @@ model Media {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+
+  @@index([pharmacyId])
+  @@index([prescriptionId])
 }
 
 model FeedBack {
@@ -314,6 +347,9 @@ model FeedBack {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+
+  @@index([userId, from, topic])
+  @@index([createdAt])
 }
 
 enum FeedBackTopic {
@@ -362,3 +398,4 @@ enum PharmacyStatus {
   VERIFIED
   UNVERIFIED
 }
+

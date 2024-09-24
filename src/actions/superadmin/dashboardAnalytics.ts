@@ -5,7 +5,7 @@ import { DashboardData, OrderStatusData, RevenueData, TopSellingMedicine } from 
 import { PrismaClient } from "@prisma/client";
 import { cache } from "react";
 
-export const getDashboardAnalytics = cache(async (timeRange: "week" | "month" | "year" | "all"): Promise<DashboardData> => {
+export const getDashboardAnalytics = cache(async (timeRange: "week" | "month" | "year" | "all", slug?: string): Promise<DashboardData> => {
   const currentDate = new Date();
   let startDate: Date | undefined;
 
@@ -37,8 +37,15 @@ export const getDashboardAnalytics = cache(async (timeRange: "week" | "month" | 
               createdAt: {
                 gte: startDate,
               },
+              pharmacy: {
+                slug: slug ? { equals: slug } : undefined,
+              },
             }
-          : {},
+          : {
+              pharmacy: {
+                slug: slug ? { equals: slug } : undefined,
+              },
+            },
         orderBy: {
           createdAt: "asc",
         },
@@ -60,8 +67,15 @@ export const getDashboardAnalytics = cache(async (timeRange: "week" | "month" | 
               createdAt: {
                 gte: startDate,
               },
+              pharmacy: {
+                slug: slug ? { equals: slug } : undefined,
+              },
             }
-          : {},
+          : {
+              pharmacy: {
+                slug: slug ? { equals: slug } : undefined,
+              },
+            },
       });
 
       const orderStatusData: OrderStatusData[] = orderStatusDistribution.map((item) => ({
@@ -84,8 +98,15 @@ export const getDashboardAnalytics = cache(async (timeRange: "week" | "month" | 
                   createdAt: {
                     gte: startDate,
                   },
+                  pharmacy: {
+                    slug: slug ? { equals: slug } : undefined,
+                  },
                 }
-              : {},
+              : {
+                  pharmacy: {
+                    slug: slug ? { equals: slug } : undefined,
+                  },
+                },
           },
         },
         orderBy: {
@@ -112,7 +133,5 @@ export const getDashboardAnalytics = cache(async (timeRange: "week" | "month" | 
   } catch (error) {
     console.error("Error fetching dashboard data:", error);
     throw new Error("Failed to fetch dashboard data");
-  } finally {
-    await prisma.$disconnect();
   }
 });
