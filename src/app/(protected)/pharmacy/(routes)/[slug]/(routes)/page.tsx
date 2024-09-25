@@ -1,13 +1,13 @@
-import countPharmacyTotalPrice from "@/actions/pharmacy/countPharmacyTotalPrice";
-import countPharmacyOrders from "@/actions/pharmacy/countTotalOrders";
-import getPharmacy from "@/actions/pharmacy/getPharmacy";
-import ErrorBoundary from "@/components/shared/ErrorBoundary";
 import React, { Suspense, use } from "react";
+
+import countPharmacyOrders from "@/actions/pharmacy/countTotalOrders";
+import ErrorBoundary from "@/components/shared/ErrorBoundary";
 import PharmacyClient from "../_components/PharmacyClient";
 import AppHeader from "@/components/layout/AppHeader";
 import CardSkeletons from "@/components/sections/skeletons/CardSkeletons";
-import PharmacyDashboard from "../_components/PharmacyDashboard";
+import countPharmacyTotalPrice from "@/actions/pharmacy/countPharmacyTotalPrice";
 import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
+import PharmacyDashboard from "../_components/PharmacyDashboard";
 
 interface PageProps {
   params: {
@@ -15,27 +15,19 @@ interface PageProps {
   };
 }
 
-const SuspensePage = ({ slug }: { slug: string }) => {
-  const pharmacy = use(getPharmacy({ slug }));
-  const totalPrescriptionToReview = use(countPharmacyOrders({ status: ["PRESCRIPTION_UNDER_REVIEW"] }));
-  const totalCompletedOrders = use(countPharmacyOrders({ status: ["COMPLETED"] }));
-  const totalAmount = use(countPharmacyTotalPrice({ status: ["PAID"] }));
+const SuspensePage = () => {
+  const promiseResult = Promise.all([
+    countPharmacyOrders({ status: ["PRESCRIPTION_UNDER_REVIEW"] }),
+    countPharmacyOrders({ status: ["COMPLETED"] }),
+    countPharmacyTotalPrice({ status: ["PAID"] }),
+  ]);
+  const [totalPrescriptionToReview, totalCompletedOrders, totalAmount] = use(promiseResult);
 
   return (
     <>
-      <PharmacyClient
-        totalAmount={totalAmount}
-        pharmacy={pharmacy}
-        slug={slug}
-        totalPrescriptionToReview={totalPrescriptionToReview}
-        totalCompletedOrders={totalCompletedOrders}
-      />
+      <PharmacyClient totalAmount={totalAmount} totalPrescriptionToReview={totalPrescriptionToReview} totalCompletedOrders={totalCompletedOrders} />
     </>
   );
-};
-
-const SuspenseCharts = ({ slug }: { slug: string }) => {
-  return <PharmacyDashboard slug={slug} />;
 };
 
 const PharmacySlugPage = ({ params }: PageProps) => {
@@ -45,14 +37,10 @@ const PharmacySlugPage = ({ params }: PageProps) => {
       <MaxWidthWrapper className="grid grid-cols-1 gap-5">
         <ErrorBoundary>
           <Suspense fallback={<CardSkeletons cards={3} />}>
-            <SuspensePage slug={params.slug} />
+            <SuspensePage />
           </Suspense>
         </ErrorBoundary>
-        <ErrorBoundary>
-          <Suspense fallback={<CardSkeletons cards={3} />}>
-            <SuspenseCharts slug={params.slug} />
-          </Suspense>
-        </ErrorBoundary>
+        <PharmacyDashboard slug={params.slug} />
       </MaxWidthWrapper>
     </div>
   );

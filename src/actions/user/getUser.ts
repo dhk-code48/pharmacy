@@ -7,6 +7,7 @@ export default async function getUserInfo() {
   const session = await auth();
   if (!session) throw new Error("Un Authorized");
   const user = await prisma.user.findUnique({
+    cacheStrategy: { swr: 60, ttl: 60 },
     where: {
       id: session.user.id,
     },

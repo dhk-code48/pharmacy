@@ -16,6 +16,7 @@ export default async function countPharmacyOrders({ status }: CountPharmacyOrder
       pharmacySlug: session?.user.pharmacyId,
       status: status ? { in: status } : undefined,
     },
+    cacheStrategy: { swr: 60, ttl: 60 },
   });
   return orders;
 }

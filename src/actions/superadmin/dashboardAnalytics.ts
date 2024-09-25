@@ -28,6 +28,7 @@ export const getDashboardAnalytics = cache(async (timeRange: "week" | "month" | 
     const result = await prisma.$transaction(async (tx) => {
       // Revenue Overview
       const revenueOverview = await tx.invoice.groupBy({
+        cacheStrategy: { swr: 60, ttl: 60 },
         by: ["createdAt"],
         _sum: {
           total: true,
@@ -58,6 +59,7 @@ export const getDashboardAnalytics = cache(async (timeRange: "week" | "month" | 
 
       // Order Status Distribution
       const orderStatusDistribution = await tx.order.groupBy({
+        cacheStrategy: { swr: 60, ttl: 60 },
         by: ["status"],
         _count: {
           _all: true,
@@ -85,6 +87,7 @@ export const getDashboardAnalytics = cache(async (timeRange: "week" | "month" | 
 
       // Top Selling Medicines
       const topSellingMedicines = await tx.medicine.findMany({
+        cacheStrategy: { swr: 60, ttl: 60 },
         select: {
           name: true,
           _count: {

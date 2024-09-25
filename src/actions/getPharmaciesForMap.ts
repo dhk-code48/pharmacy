@@ -16,6 +16,7 @@ export const fetchPharmacies = async (bounds: {
   const [northeastLat, northeastLng] = northeast;
 
   const pharmacies: (Pharmacy & { location: PharmacyLocation })[] = await prisma.pharmacy.findMany({
+    cacheStrategy: { swr: 60, ttl: 60 },
     where: {
       location: {
         latitude: {

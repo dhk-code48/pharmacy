@@ -9,10 +9,6 @@ import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
 import { AppBreadcrumb } from "@/components/layout/AppBreadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
 const NotificationSettings = () => {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
   const [isSubscribed, setIsSubscribed] = useState(false);
   useEffect(() => {
     if ("serviceWorker" in navigator && "PushManager" in window) {
@@ -105,7 +101,8 @@ const NotificationSettings = () => {
       unsubscribeFromPush();
     }
   };
-  return isMounted ? (
+
+  return (
     <div className="flex items-center justify-between border px-3 py-4 rounded-xl">
       <div>
         <strong>Notifications</strong>
@@ -117,11 +114,6 @@ const NotificationSettings = () => {
         <Switch defaultChecked={pushSubscription ? true : false} onCheckedChange={handleSwitchChange} />
       )}
     </div>
-  ) : (
-    <MaxWidthWrapper className="space-y-3">
-      <Skeleton className="w-full h-10" />
-      <Skeleton className="w-full h-20" />
-    </MaxWidthWrapper>
   );
 };
 export default NotificationSettings;

@@ -52,3 +52,5 @@
 [0918/223605.672:ERROR:crashpad_client_win.cc(810)] not connected
 [0918/223605.802:ERROR:crashpad_client_win.cc(810)] not connected
 [0924/174741.371:ERROR:crashpad_client_win.cc(810)] not connected
+[0925/010005.879:ERROR:crashpad_client_win.cc(810)] not connected
+[0925/010006.137:ERROR:crashpad_client_win.cc(810)] not connected

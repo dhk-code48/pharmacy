@@ -24,6 +24,7 @@ export default async function countPharmacyTotalPrice({ status, paymentMethod }:
       shippingPrice: true,
       total: true,
     },
+    cacheStrategy: { swr: 60, ttl: 60 },
   });
   return amounts._sum;
 }

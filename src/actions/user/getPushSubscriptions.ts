@@ -9,6 +9,7 @@ export default async function getPushSubscription(endPoint: string) {
   if (!session?.user.id) throw new Error("UnAuthorized!!");
 
   const subscription = await prisma.pushSubscription.findFirst({
+    cacheStrategy: { swr: 60, ttl: 60 },
     where: {
       userId: session.user.id,
       endPoint,

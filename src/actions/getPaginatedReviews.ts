@@ -38,6 +38,7 @@ export async function getPaginatedReviews({ page, per_page, sort = "createdAt.de
 
   const [orders, totalOrders] = await prisma.$transaction([
     prisma.review.findMany({
+      cacheStrategy: { swr: 60, ttl: 60 },
       skip: offset,
       take: per_page,
       where: filters,
@@ -51,6 +52,7 @@ export async function getPaginatedReviews({ page, per_page, sort = "createdAt.de
       },
     }),
     prisma.review.count({
+      cacheStrategy: { swr: 60, ttl: 60 },
       where: filters,
     }),
   ]);

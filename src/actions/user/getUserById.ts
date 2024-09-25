@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 export const getUserByEmail = async (email: string) => {
   try {
     const user = await prisma.user.findUnique({
+      cacheStrategy: { swr: 60, ttl: 60 },
       where: {
         email: email,
       },

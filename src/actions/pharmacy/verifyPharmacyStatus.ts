@@ -16,6 +16,7 @@ export default async function verifyPharmacyStatus(userId: string, slug: string)
 
     // Query the database if not found in cache
     const pharmacy = await prisma.pharmacy.findUnique({
+      cacheStrategy: { swr: 60, ttl: 60 },
       where: { userId, slug, status: PharmacyStatus.VERIFIED },
       select: { id: true }, // Only fetch minimal data
     });

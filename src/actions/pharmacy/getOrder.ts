@@ -7,6 +7,7 @@ export default async function getPharmacyOrder({ id, slug }: { id: number; slug:
   if (!session?.user.pharmacyId) throw new Error("UnAuthorized!!");
 
   const order = await prisma.order.findUnique({
+    cacheStrategy: { swr: 60, ttl: 60 },
     where: {
       pharmacySlug: slug,
       id,

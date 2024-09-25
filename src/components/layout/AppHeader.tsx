@@ -1,4 +1,3 @@
-import React from "react";
 import MaxWidthWrapper from "../shared/MaxWidthWrapper";
 import { MobileSheetSidebar } from "./Sidebar";
 import { PHARMACY_DASHBOARD_SIDEBAR } from "@/config/pharmacyDashboard";

@@ -46,6 +46,7 @@ export async function getPaginatedUserOrders({
 
   const [orders, totalOrders] = await prisma.$transaction([
     prisma.order.findMany({
+      cacheStrategy: { swr: 60, ttl: 60 },
       skip: offset,
       take: per_page,
       where: filters,
@@ -64,6 +65,7 @@ export async function getPaginatedUserOrders({
       },
     }),
     prisma.order.count({
+      cacheStrategy: { swr: 60, ttl: 60 },
       where: filters,
     }),
   ]);

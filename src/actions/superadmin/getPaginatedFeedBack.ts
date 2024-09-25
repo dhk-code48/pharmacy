@@ -40,6 +40,7 @@ export async function getPaginatedFeedBack({ page, per_page, sort = "createdAt.d
 
   const [orders, totalOrders] = await prisma.$transaction([
     prisma.feedBack.findMany({
+      cacheStrategy: { swr: 60, ttl: 60 },
       skip: offset,
       take: per_page,
       where: filters,
@@ -53,6 +54,7 @@ export async function getPaginatedFeedBack({ page, per_page, sort = "createdAt.d
       },
     }),
     prisma.feedBack.count({
+      cacheStrategy: { swr: 60, ttl: 60 },
       where: filters,
     }),
   ]);

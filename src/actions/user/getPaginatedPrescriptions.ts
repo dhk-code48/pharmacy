@@ -29,6 +29,7 @@ export async function getPaginatedPrescriptions({ page, per_page, sort, descript
 
   // Fetch orders of the specific user
   const prescriptions = await prisma.prescription.findMany({
+    cacheStrategy: { swr: 60, ttl: 60 },
     skip: offset,
     take: per_page,
     where: {
@@ -43,6 +44,7 @@ export async function getPaginatedPrescriptions({ page, per_page, sort, descript
   });
 
   const totalPrescriptions = await prisma.prescription.count({
+    cacheStrategy: { swr: 60, ttl: 60 },
     where: {
       userId: session.user.id,
       description: description ? { contains: description } : undefined,

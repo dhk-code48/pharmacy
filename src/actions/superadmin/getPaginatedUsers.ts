@@ -34,6 +34,7 @@ export async function getPaginatedUsers({ page, per_page, sort = "createdAt.desc
 
   const [orders, totalOrders] = await prisma.$transaction([
     prisma.user.findMany({
+      cacheStrategy: { swr: 60, ttl: 60 },
       skip: offset,
       take: per_page,
       where: filters,

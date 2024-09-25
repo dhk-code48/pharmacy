@@ -27,11 +27,13 @@ export const getDashboardSummary = cache(async (timeRange: "week" | "month" | "y
     const stats = await prisma.$transaction(async (tx) => {
       const [totalPharmacies, totalOrders, totalCustomers, revenueSum] = await Promise.all([
         tx.pharmacy.count({
+          cacheStrategy: { swr: 60, ttl: 60 },
           where: {
             status: "VERIFIED",
           },
         }),
         tx.order.count({
+          cacheStrategy: { swr: 60, ttl: 60 },
           where: startDate
             ? {
                 createdAt: {
@@ -44,6 +46,7 @@ export const getDashboardSummary = cache(async (timeRange: "week" | "month" | "y
             : undefined,
         }),
         tx.user.count({
+          cacheStrategy: { swr: 60, ttl: 60 },
           where: {
             role: "USER",
             ...(startDate
@@ -59,6 +62,7 @@ export const getDashboardSummary = cache(async (timeRange: "week" | "month" | "y
           },
         }),
         tx.invoice.aggregate({
+          cacheStrategy: { swr: 60, ttl: 60 },
           _sum: {
             total: true,
           },

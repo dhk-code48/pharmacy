@@ -7,6 +7,7 @@ export default async function getUserOrder({ id }: { id: number }) {
   if (!session?.user.id) throw new Error("UnAuthorized!!");
 
   const order = await prisma.order.findUnique({
+    cacheStrategy: { swr: 60, ttl: 60 },
     where: {
       userId: session.user.id,
       id,

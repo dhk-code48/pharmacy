@@ -18,6 +18,7 @@ export default async function getPharmacy({
   user?: boolean;
 }) {
   const pharmacy = await prisma.pharmacy.findUnique({
+    cacheStrategy: { swr: 60, ttl: 60 },
     where: {
       slug,
     },

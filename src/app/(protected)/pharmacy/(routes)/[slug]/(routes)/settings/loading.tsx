@@ -1,18 +1,35 @@
+import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdminPanelLoading() {
   return (
-    <>
-      <div className="flex flex-col gap-5">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Skeleton className="h-32 w-full rounded-lg" />
-          <Skeleton className="h-32 w-full rounded-lg" />
-          <Skeleton className="h-32 w-full rounded-lg" />
-          <Skeleton className="h-32 w-full rounded-lg" />
+    <div className="container max-w-6x">
+      <DashboardHeading heading="Settings" text="Manage your and pharmacy settings from here" />
+      <div className="flex items-center justify-between border px-3 py-4 rounded-xl">
+        <div>
+          <strong>Notifications</strong>
+          <p className="text-xs">Get notified and track your order status</p>
         </div>
-        <Skeleton className="h-[500px] w-full rounded-lg" />
-        <Skeleton className="h-[500px] w-full rounded-lg" />
+        <Skeleton className="w-10 h-5 rounded-2xl" />
       </div>
-    </>
+      <div className="border p-4 rounded-xl">
+        <strong>Theme</strong>
+        <p className="text-sm text-muted-foreground">Select the theme for the application.</p>
+        <div className="flex mt-5 -z-30 gap-10 flex-wrap">
+          <Skeleton className="size-20" />
+          <Skeleton className="size-20" />
+          <Skeleton className="size-20" />
+        </div>
+      </div>
+      <div className="grid gap-5 md:grid-cols-2 items-start justify-between border px-3 py-4 rounded-xl">
+        <div className="max-w-sm">
+          <p className="text-sm font-semibold">Pharmacy Form</p>
+          <p className="text-sm text-muted-foreground">
+            Update your pharmacy details below, Note that all the pharmacy details should be legit and truth
+          </p>
+        </div>
+        <Skeleton className="max-w-sm size-full max-h-40" />
+      </div>
+    </div>
   );
 }
