@@ -1,13 +1,14 @@
 "use client";
 
-import * as React from "react";
+import React, { lazy, Suspense } from "react";
 import { type ColumnDef, type Table as TanstackTable, flexRender } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DataTablePagination } from "./DataTablePagination";
-import { DataTableToolbar } from "./DataTableToolBar";
+
 import type { DataTableFilterableColumn, DataTableSearchableColumn } from "@/types/data-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useMediaQuery } from "@/hooks/useMediaQuery"; // A custom hook for detecting screen size
+import ErrorBoundary from "../shared/ErrorBoundary";
+import { Skeleton } from "../ui/skeleton";
 
 type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -17,6 +18,8 @@ type DataTableProps<TData, TValue> = {
   searchableColumns?: DataTableSearchableColumn<TData>[];
 };
 
+const DataTableToolbar = lazy(() => import("./DataTableToolBar"));
+const DataTablePagination = lazy(() => import("./DataTablePagination"));
 export function DataTable<TData, TValue>({
   columns,
   table,
@@ -28,7 +31,12 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} filterableColumns={filterableColumns} searchableColumns={searchableColumns} />
+      <ErrorBoundary>
+        <Suspense fallback={<Skeleton className="w-full h-10" />}>
+          {/* @ts-ignore */}
+          <DataTableToolbar table={table} filterableColumns={filterableColumns} searchableColumns={searchableColumns} />
+        </Suspense>
+      </ErrorBoundary>
 
       {/* Render cards on mobile */}
       {isMobile ? (
@@ -99,7 +107,12 @@ export function DataTable<TData, TValue>({
         </div>
       )}
 
-      <DataTablePagination table={table} totalRows={totalRows} />
+      <ErrorBoundary>
+        <Suspense fallback={<Skeleton className="w-full h-10" />}>
+          {/* @ts-ignore */}
+          <DataTablePagination table={table} totalRows={totalRows} />
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 }

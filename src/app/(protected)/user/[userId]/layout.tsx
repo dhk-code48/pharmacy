@@ -55,7 +55,7 @@ const UserLayout = async ({ children, params }: UserLayoutProps) => {
                 </Link>
 
                 <NotificationsDialog userId={params.userId} />
-                <UserAccount />
+                <UserAccount session={session} />
               </div>
             </MaxWidthWrapper>
           </header>

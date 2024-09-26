@@ -2,83 +2,27 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
-import { Drawer } from "vaul";
-
+import { signOut } from "next-auth/react";
+import { Session } from "next-auth";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import dynamic from "next/dynamic";
 import { UserAvatar } from "@/components/shared/UserAvatar";
-import { Icons } from "../shared/Icons";
 
-export function UserAccount() {
-  const { data: session } = useSession();
+// Dynamic imports
+const DropdownMenu = dynamic(() => import("@/components/ui/dropdown-menu").then((mod) => mod.DropdownMenu), { ssr: false });
+const DropdownMenuTrigger = dynamic(() => import("@/components/ui/dropdown-menu").then((mod) => mod.DropdownMenuTrigger), { ssr: false });
+const DropdownMenuContent = dynamic(() => import("@/components/ui/dropdown-menu").then((mod) => mod.DropdownMenuContent), { ssr: false });
+const DropdownMenuItem = dynamic(() => import("@/components/ui/dropdown-menu").then((mod) => mod.DropdownMenuItem), { ssr: false });
+const DropdownMenuSeparator = dynamic(() => import("@/components/ui/dropdown-menu").then((mod) => mod.DropdownMenuSeparator), { ssr: false });
+const IconLayoutDashboardFilled = dynamic(() => import("@tabler/icons-react").then((mod) => mod.IconLayoutDashboardFilled), { ssr: false });
+const IconSettingsFilled = dynamic(() => import("@tabler/icons-react").then((mod) => mod.IconSettingsFilled), { ssr: false });
+const IconLogout = dynamic(() => import("@tabler/icons-react").then((mod) => mod.IconLogout), { ssr: false });
+
+export function UserAccount({ session }: { session: Session }) {
   const user = session?.user;
-
   const [open, setOpen] = useState(false);
-  const closeDrawer = () => {
-    setOpen(false);
-  };
-
-  const { isMobile } = useMediaQuery();
 
   if (!user) return <div className="size-8 animate-pulse rounded-full border bg-muted" />;
-
-  if (isMobile) {
-    return (
-      <Drawer.Root open={open} onClose={closeDrawer}>
-        <Drawer.Trigger onClick={() => setOpen(true)}>
-          <UserAvatar name={session.user.name} image={session.user.image} className="size-9 border" />
-        </Drawer.Trigger>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 z-40 h-full bg-background/80 backdrop-blur-sm" onClick={closeDrawer} />
-          <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 mt-24 overflow-hidden rounded-t-[10px] border bg-background px-3 text-sm">
-            <div className="sticky top-0 z-20 flex w-full items-center justify-center bg-inherit">
-              <div className="my-3 h-1.5 w-16 rounded-full bg-muted-foreground/20" />
-            </div>
-
-            <div className="flex items-center justify-start gap-2 p-2">
-              <div className="flex flex-col">
-                {user.name && <p className="font-medium">{user.name}</p>}
-                {user.email && <p className="w-[200px] truncate text-muted-foreground">{user?.email}</p>}
-              </div>
-            </div>
-
-            <ul role="list" className="mb-14 mt-1 w-full text-muted-foreground">
-              <li className="rounded-lg text-foreground hover:bg-muted">
-                <Link href="/dashboard" onClick={closeDrawer} className="flex w-full items-center gap-3 px-2.5 py-2">
-                  <Icons.dashboardFilled className="size-4" />
-                  <p className="text-sm">Dashboard</p>
-                </Link>
-              </li>
-
-              <li className="rounded-lg text-foreground hover:bg-muted">
-                <Link href="/dashboard/settings" onClick={closeDrawer} className="flex w-full items-center gap-3 px-2.5 py-2">
-                  <Icons.settingsFilled className="size-4" />
-                  <p className="text-sm">Settings</p>
-                </Link>
-              </li>
-
-              <li
-                className="rounded-lg text-foreground hover:bg-muted"
-                onClick={(event) => {
-                  event.preventDefault();
-                  signOut({
-                    callbackUrl: `${window.location.origin}/`,
-                  });
-                }}
-              >
-                <div className="flex w-full items-center gap-3 px-2.5 py-2">
-                  <Icons.logout className="size-4" />
-                  <p className="text-sm">Log out </p>
-                </div>
-              </li>
-            </ul>
-          </Drawer.Content>
-          <Drawer.Overlay />
-        </Drawer.Portal>
-      </Drawer.Root>
-    );
-  }
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -93,17 +37,16 @@ export function UserAccount() {
           </div>
         </div>
         <DropdownMenuSeparator />
-
         <DropdownMenuItem asChild>
           <Link href="/dashboard" className="flex items-center space-x-2.5">
-            <Icons.dashboardFilled className="size-4" />
+            <IconLayoutDashboardFilled className="size-4" />
             <p className="text-sm">Dashboard</p>
           </Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
           <Link href="/dashboard/settings" className="flex items-center space-x-2.5">
-            <Icons.settingsFilled className="size-4" />
+            <IconSettingsFilled className="size-4" />
             <p className="text-sm">Settings</p>
           </Link>
         </DropdownMenuItem>
@@ -118,8 +61,8 @@ export function UserAccount() {
           }}
         >
           <div className="flex items-center space-x-2.5">
-            <Icons.logout className="size-4" />
-            <p className="text-sm">Log out </p>
+            <IconLogout className="size-4" />
+            <p className="text-sm">Log out</p>
           </div>
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -37,7 +37,7 @@ const SuperAdmin = async ({ children }: { children: React.ReactNode }) => {
               <div className="hidden sm:flex items-center justify-end w-full gap-3">
                 <NotificationsDialog userId={session.user.id} />
 
-                <UserAccount />
+                <UserAccount session={session} />
               </div>
             </MaxWidthWrapper>
           </header>

@@ -47,7 +47,7 @@ const PharmacyLayout = async ({ children, params }: UserLayoutProps) => {
             </div>
 
             <NotificationsDialog userId={session.user.id} />
-            <UserAccount />
+            <UserAccount session={session} />
           </MaxWidthWrapper>
         </header>
         <main className="flex-1 p-4 xl:px-8">

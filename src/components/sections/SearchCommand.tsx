@@ -1,17 +1,16 @@
 "use client";
 
-import React from "react";
-import { usePathname, useRouter } from "next/navigation";
 import { SidebarNavItem } from "@/types";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Icons } from "@/components/shared/Icons";
+import React from "react";
+import dynamic from "next/dynamic";
+
+const SearchCommandContent = dynamic(() => import("./SearchCommandContent"));
 
 export function SearchCommand({ prefix, links }: { links: SidebarNavItem[]; prefix: string }) {
   const [open, setOpen] = React.useState(false);
-  const router = useRouter();
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -23,13 +22,6 @@ export function SearchCommand({ prefix, links }: { links: SidebarNavItem[]; pref
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
   }, []);
-
-  const runCommand = React.useCallback((command: () => unknown) => {
-    setOpen(false);
-    command();
-  }, []);
-
-  const path = usePathname();
 
   return (
     <>
@@ -48,33 +40,7 @@ export function SearchCommand({ prefix, links }: { links: SidebarNavItem[]; pref
           <span className="text-xs">⌘</span>K
         </kbd>
       </Button>
-
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type a command or search..." />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          {links.map((section) => (
-            <CommandGroup key={section.title} heading={section.title}>
-              {section.items.map((item) => {
-                const Icon = Icons[item.icon || "arrowRight"];
-                const href = prefix + item.href;
-                return (
-                  <CommandItem
-                    key={item.title}
-                    onSelect={() => {
-                      runCommand(() => router.push(href as string));
-                    }}
-                    className={cn(path === href ? "bg-muted text-primary" : "text-muted-foreground hover:text-accent-foreground")}
-                  >
-                    <Icon className="mr-2 size-5" />
-                    {item.title}
-                  </CommandItem>
-                );
-              })}
-            </CommandGroup>
-          ))}
-        </CommandList>
-      </CommandDialog>
+      {open && <SearchCommandContent prefix={prefix} links={links} open={open} setOpen={setOpen} />}
     </>
   );
 }

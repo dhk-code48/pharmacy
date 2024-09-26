@@ -16,7 +16,7 @@ interface DataTableToolbarProps<TData> {
   searchableColumns?: DataTableSearchableColumn<TData>[];
 }
 
-export function DataTableToolbar<TData>({ table, filterableColumns = [], searchableColumns = [] }: DataTableToolbarProps<TData>) {
+export default function DataTableToolbar<TData>({ table, filterableColumns = [], searchableColumns = [] }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
@@ -55,25 +55,6 @@ export function DataTableToolbar<TData>({ table, filterableColumns = [], searcha
             <Cross2Icon className="ml-2 h-4 w-4" />
           </Button>
         )}
-        {/* {table.getColumn("status") && (
-                    <DataTableFacetedFilter
-                        column={table.getColumn("status")}
-                        title="Status"
-                        options={
-                            statuses as unknown as {
-                                label: string;
-                                value: string;
-                            }[]
-                        }
-                    />
-                )}
-                {table.getColumn("role") && (
-                    <DataTableFacetedFilter
-                        column={table.getColumn("role")}
-                        title="Roles"
-                        options={roles}
-                    />
-                )} */}
       </div>
       <DataTableViewOptions table={table} />
     </div>

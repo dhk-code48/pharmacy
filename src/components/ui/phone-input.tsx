@@ -18,7 +18,6 @@ import * as React from "react";
 import { countries } from "@/config/conuntries";
 import { useStateHistory } from "@/hooks/useStateHistory";
 import Image from "next/image";
-import { Icons } from "../shared/Icons";
 
 export type Country = (typeof countries)[number];
 

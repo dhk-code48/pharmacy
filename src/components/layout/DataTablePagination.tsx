@@ -10,7 +10,7 @@ interface DataTablePaginationProps<TData> {
   totalRows: number;
 }
 
-export function DataTablePagination<TData>({ table, pageSizeOptions = [10, 20, 30, 40, 50], totalRows }: DataTablePaginationProps<TData>) {
+export default function DataTablePagination<TData>({ table, pageSizeOptions = [10, 20, 30, 40, 50], totalRows }: DataTablePaginationProps<TData>) {
   return (
     <div className="flex w-full flex-col items-center justify-between gap-4 overflow-auto px-2 py-1 sm:flex-row sm:gap-8">
       <p className="flex-1 text-sm text-muted-foreground">

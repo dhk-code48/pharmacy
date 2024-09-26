@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import OrderDetails from "./OrderDetails";
 import OrderProgress from "./OrderProgress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,16 +13,14 @@ import { Badge } from "@/components/ui/badge";
 import InvoiceUi from "@/components/shared/Invoice";
 import { toast } from "sonner";
 import shipOrder from "@/actions/pharmacy/shipOrder";
-import { Icons } from "@/components/shared/Icons";
 import deliverAndCompleteOrder from "@/actions/pharmacy/deliverAndCompleteOrder";
 import setPaymentPaid from "@/actions/pharmacy/setPaymentPaid";
 
-/**
- * PharmacyOrderClient Component
- * Main component for displaying the pharmacy order, progress, invoice, and prescription details.
- *
- * @param order - PharmacyOrder object
- */
+// Lazy load icons with React.lazy
+const IconTruck = React.lazy(() => import("@tabler/icons-react").then((mod) => ({ default: mod.IconTruck })));
+const IconMoney = React.lazy(() => import("@tabler/icons-react").then((mod) => ({ default: mod.IconCash })));
+const IconChecks = React.lazy(() => import("@tabler/icons-react").then((mod) => ({ default: mod.IconChecks })));
+
 export default function PharmacyOrderClient({ order }: { order: PharmacyOrder }) {
   async function onShipping() {
     const isConfirm = confirm("Are you sure, order is ready for shipping or shipped");
@@ -33,6 +31,7 @@ export default function PharmacyOrderClient({ order }: { order: PharmacyOrder })
         error: "Unexpected error, Try again!",
       });
   }
+
   async function onDeliveredAndComplete() {
     const isConfirm = confirm("Are you sure, order is delivered and completed");
     isConfirm &&
@@ -42,8 +41,9 @@ export default function PharmacyOrderClient({ order }: { order: PharmacyOrder })
         error: "Unexpected error, Try again!",
       });
   }
+
   async function onPaymentPaid() {
-    const isConfirm = confirm("Are you sure, order is delivered and completed");
+    const isConfirm = confirm("Are you sure, payment is received and the order is completed");
     isConfirm &&
       toast.promise(setPaymentPaid(order.id), {
         loading: "Processing order...",
@@ -84,9 +84,11 @@ export default function PharmacyOrderClient({ order }: { order: PharmacyOrder })
             </>
           )}
         </TabsContent>
+
         <TabsContent value="prescription">
           <OrderPrescription prescription={order.prescription} />
         </TabsContent>
+
         <TabsContent value="timeline">
           <Card>
             <CardHeader>
@@ -98,19 +100,31 @@ export default function PharmacyOrderClient({ order }: { order: PharmacyOrder })
           </Card>
         </TabsContent>
       </Tabs>
+
       {order.status === "ORDER_CONFIRMED" && (
         <Button variant="outline" disabled={!order.invoice} onClick={onShipping}>
-          <Icons.truck className="mr-2 size-6" /> Continue For Shipping
+          <Suspense fallback={<span>Loading...</span>}>
+            <IconTruck className="mr-2 size-6" />
+          </Suspense>
+          Continue For Shipping
         </Button>
       )}
+
       {order?.invoice?.paymentMethod === "CASH_ON_DELIVERY" && order.invoice.paymentStatus !== "PAID" && (
         <Button variant="outline" onClick={onPaymentPaid}>
-          <Icons.money className="mr-2 size-6" /> Payment: Paid
+          <Suspense fallback={<span>Loading...</span>}>
+            <IconMoney className="mr-2 size-6" />
+          </Suspense>
+          Payment: Paid
         </Button>
       )}
+
       {order.status === "SHIPPED" && (
         <Button variant="outline" disabled={!order.invoice} onClick={onDeliveredAndComplete}>
-          <Icons.checks className="mr-2 size-6" /> Check Delivered And Completed
+          <Suspense fallback={<span>Loading...</span>}>
+            <IconChecks className="mr-2 size-6" />
+          </Suspense>
+          Check Delivered And Completed
         </Button>
       )}
     </div>

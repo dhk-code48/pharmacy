@@ -1,11 +1,14 @@
 "use client";
-import { signIn, useSession } from "next-auth/react";
-import { Icons } from "@/components/shared/Icons";
+import { signIn } from "next-auth/react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+
+const IconChevronLeft = React.lazy(() => import("@tabler/icons-react").then((mod) => ({ default: mod.IconChevronLeft })));
+const IconGoogle = React.lazy(() => import("@tabler/icons-react").then((mod) => ({ default: mod.IconBrandGoogleFilled })));
+const IconFacebook = React.lazy(() => import("@tabler/icons-react").then((mod) => ({ default: mod.IconBrandFacebookFilled })));
+
 const AuthLogin = () => {
   const handleLogin = async () => {
     const result = await signIn("google", { redirect: false });
@@ -23,7 +26,7 @@ const AuthLogin = () => {
     <div className="h-screen grid relative place-content-center grid-cols-1 lg:grid-cols-2">
       <div className="md:top-10 md:left-10 top-5 left-5 absolute">
         <Link href="/" className={buttonVariants({ variant: "outline" })}>
-          <Icons.chevronLeft size={20} />
+          <IconChevronLeft size={20} />
           Back Home
         </Link>
       </div>
@@ -36,7 +39,7 @@ const AuthLogin = () => {
 
         <div className="mt-8 space-y-6">
           <Button className="w-full" onClick={handleLogin}>
-            <Icons.google className="mr-2" />
+            <IconGoogle className="mr-2" />
             Continue With Google
           </Button>
 
@@ -44,7 +47,7 @@ const AuthLogin = () => {
             disabled
             className="w-full flex items-center justify-center  text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
-            <Icons.facebook className="mr-2" />
+            <IconFacebook className="mr-2" />
             Continue With Facebook
           </Button>
         </div>
