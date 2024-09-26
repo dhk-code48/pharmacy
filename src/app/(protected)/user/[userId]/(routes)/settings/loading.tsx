@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function AdminPanelLoading() {
   return (
     <div className="space-y-5">
-      <DashboardHeading heading="Settings" text="Manage your and pharmacy settings from here" />
+      <DashboardHeading heading="Settings" text="Manage your settings from here" />
       <div className="flex items-center justify-between border px-3 py-4 rounded-xl">
         <div>
           <strong>Notifications</strong>
@@ -23,10 +23,8 @@ export default function AdminPanelLoading() {
       </div>
       <div className="grid gap-5 md:grid-cols-2 items-start justify-between border px-3 py-4 rounded-xl">
         <div className="max-w-sm">
-          <p className="text-sm font-semibold">Pharmacy Form</p>
-          <p className="text-sm text-muted-foreground">
-            Update your pharmacy details below, Note that all the pharmacy details should be legit and truth
-          </p>
+          <p className="text-sm font-semibold">User Form</p>
+          <p className="text-sm text-muted-foreground">Update your user details below, Note that all the user details should be legit and truth</p>
         </div>
         <Skeleton className="max-w-sm size-full max-h-40" />
       </div>

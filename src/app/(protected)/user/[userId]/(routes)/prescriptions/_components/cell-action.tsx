@@ -24,40 +24,32 @@ const CellAction = ({ prescription }: { prescription: Prescription & { images: M
   }
 
   return (
-    <DropdownMenu modal={false}>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontalIcon className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-full max-w-[12rem]">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+    <DropdownMenuContent align="end" className="w-full max-w-[12rem]">
+      <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-        <DropdownMenuSeparator />
+      <DropdownMenuSeparator />
 
-        <Dialog>
-          <DialogTrigger
-            className={cn(
-              "relative w-full justify-between hover:bg-accent hover:text-accent-foreground flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground"
-            )}
-          >
-            View
-            <Icons.eye className="text-muted-foreground" size={18} />
-          </DialogTrigger>
-          <DialogContent>
-            <PrescriptionImages images={prescription.images} />
-          </DialogContent>
-        </Dialog>
+      <Dialog>
+        <DialogTrigger
+          className={cn(
+            "relative w-full justify-between hover:bg-accent hover:text-accent-foreground flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground"
+          )}
+        >
+          View
+          <Icons.eye className="text-muted-foreground" size={18} />
+        </DialogTrigger>
+        <DialogContent>
+          <PrescriptionImages images={prescription.images} />
+        </DialogContent>
+      </Dialog>
 
-        <DropdownMenuItem className="text-red-600 bg-destructive/30" onClick={() => onDelete(prescription.id)}>
-          Remove
-          <DropdownMenuShortcut>
-            <Icons.delete size={18} />
-          </DropdownMenuShortcut>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      <DropdownMenuItem className="text-red-600 bg-destructive/30" onClick={() => onDelete(prescription.id)}>
+        Remove
+        <DropdownMenuShortcut>
+          <Icons.delete size={18} />
+        </DropdownMenuShortcut>
+      </DropdownMenuItem>
+    </DropdownMenuContent>
   );
 };
 

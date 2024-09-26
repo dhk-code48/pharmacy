@@ -1,10 +1,11 @@
 import { getPaginatedPharmacies } from "@/actions/superadmin/getPaginatedPharmacies";
-import { AppBreadcrumb } from "@/components/layout/AppBreadcrumb";
 import AppHeader from "@/components/layout/AppHeader";
 import { SearchParams } from "@/types/data-table";
 import React, { Suspense } from "react";
 import * as z from "zod";
 import { PharmaciesTable } from "./_components/PharmacyTable";
+import TableSkeleton from "@/components/shared/TableSkeleton";
+import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
 
 const searchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -30,10 +31,11 @@ const SuspensePage = ({ searchParams }: PageProps) => {
 
 const SuperAdminPharmacies = ({ searchParams }: PageProps) => {
   return (
-    <div>
+    <div className="space-y-5">
+      <DashboardHeading heading="Pharmacies" text="View and manage pharmacies" />
       <AppHeader redirectId="" title="Pharmacies" type="superAdmin" />
-      <AppBreadcrumb items={[{ href: "/superAdmin/pharmacies", label: "Pharmacies" }]} />
-      <Suspense>
+
+      <Suspense fallback={<TableSkeleton />}>
         <SuspensePage searchParams={searchParams} />
       </Suspense>
     </div>

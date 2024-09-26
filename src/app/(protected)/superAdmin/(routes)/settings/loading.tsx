@@ -21,15 +21,6 @@ export default function AdminPanelLoading() {
           <Skeleton className="size-20" />
         </div>
       </div>
-      <div className="grid gap-5 md:grid-cols-2 items-start justify-between border px-3 py-4 rounded-xl">
-        <div className="max-w-sm">
-          <p className="text-sm font-semibold">Pharmacy Form</p>
-          <p className="text-sm text-muted-foreground">
-            Update your pharmacy details below, Note that all the pharmacy details should be legit and truth
-          </p>
-        </div>
-        <Skeleton className="max-w-sm size-full max-h-40" />
-      </div>
     </div>
   );
 }

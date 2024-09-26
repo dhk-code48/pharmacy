@@ -1,10 +1,11 @@
 import { getPaginatedFeedBack } from "@/actions/superadmin/getPaginatedFeedBack";
-import { AppBreadcrumb } from "@/components/layout/AppBreadcrumb";
 import AppHeader from "@/components/layout/AppHeader";
 import { SearchParams } from "@/types/data-table";
 import React, { Suspense } from "react";
 import * as z from "zod";
 import { FeedBackTable } from "./_components/feedback-table";
+import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
+import TableSkeleton from "@/components/shared/TableSkeleton";
 
 const searchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -31,10 +32,10 @@ const SuspensePage = ({ searchParams }: PageProps) => {
 
 const SuperAdminPharmacies = ({ searchParams }: PageProps) => {
   return (
-    <div>
+    <div className="space-y-5">
       <AppHeader redirectId="" title="Pharmacies" type="superAdmin" />
-      <AppBreadcrumb items={[{ href: "/superAdmin/pharmacies", label: "Pharmacies" }]} />
-      <Suspense>
+      <DashboardHeading heading="Feedbacks" text="View feedbacks from user and pharmacies" />
+      <Suspense fallback={<TableSkeleton />}>
         <SuspensePage searchParams={searchParams} />
       </Suspense>
     </div>

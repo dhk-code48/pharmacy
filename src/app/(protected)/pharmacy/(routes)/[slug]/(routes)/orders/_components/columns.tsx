@@ -1,10 +1,17 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import { CellAction } from "./cell-action";
 import { formatDate } from "@/lib/format";
 import { ORDER_STATUS_COLOR, PAYMENT_STATUS } from "@/config";
 import { PaginatedPharmacyOrder } from "@/types";
+import dynamic from "next/dynamic";
+import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { MoreHorizontalIcon } from "lucide-react";
+
+const CellAction = dynamic(() => import("./cell-action"), {
+  ssr: false,
+});
 
 export function getColumns(): ColumnDef<PaginatedPharmacyOrder>[] {
   return columns;
@@ -74,6 +81,18 @@ export const columns: ColumnDef<PaginatedPharmacyOrder>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <CellAction order={row.original} />,
+    cell: ({ row }) => (
+      <>
+        <DropdownMenu modal={false}>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontalIcon className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <CellAction order={row.original} />
+        </DropdownMenu>
+      </>
+    ),
   },
 ];

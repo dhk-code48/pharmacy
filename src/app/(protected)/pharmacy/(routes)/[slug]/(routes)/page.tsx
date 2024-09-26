@@ -6,8 +6,8 @@ import PharmacyClient from "../_components/PharmacyClient";
 import AppHeader from "@/components/layout/AppHeader";
 import CardSkeletons from "@/components/sections/skeletons/CardSkeletons";
 import countPharmacyTotalPrice from "@/actions/pharmacy/countPharmacyTotalPrice";
-import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
 import PharmacyDashboard from "../_components/PharmacyDashboard";
+import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
 
 interface PageProps {
   params: {
@@ -32,17 +32,18 @@ const SuspensePage = () => {
 
 const PharmacySlugPage = ({ params }: PageProps) => {
   return (
-    <div>
+    <>
       <AppHeader redirectId={params.slug} type="pharmacy" title="Dashboard" />
-      <MaxWidthWrapper className="grid grid-cols-1 gap-5">
+      <DashboardHeading heading="Dashboard" text="View your pharmacy activity and stats" />
+      <div className="grid grid-cols-1 gap-5">
         <ErrorBoundary>
           <Suspense fallback={<CardSkeletons cards={3} />}>
             <SuspensePage />
           </Suspense>
         </ErrorBoundary>
         <PharmacyDashboard slug={params.slug} />
-      </MaxWidthWrapper>
-    </div>
+      </div>
+    </>
   );
 };
 

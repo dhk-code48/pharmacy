@@ -25,14 +25,13 @@ type OrdersTableProps = {
   membersPromise: ReturnType<typeof getPaginatedPharmacyOrders>;
 };
 
-const searchableColumns: DataTableSearchableColumn<PaginatedPharmacyOrder>[] = [{ id: "invoiceId", placeholder: "Search description..." }];
+const searchableColumns: DataTableSearchableColumn<PaginatedPharmacyOrder>[] = [{ id: "id", placeholder: "Search By Order Id..." }];
 
 export function OrdersTable({ membersPromise }: OrdersTableProps) {
   const { data, pageCount, total } = React.use(membersPromise);
 
   const columns = useMemo<ColumnDef<PaginatedPharmacyOrder, unknown>[]>(() => getColumns(), []);
 
-  console.log("DATE => ", data);
   const orderOrder: PaginatedPharmacyOrder[] = data;
 
   const { table } = useDataTable({

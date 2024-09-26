@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import ThemeSettings from "@/components/sections/dashboard/ThemeSettings";
 import AppHeader from "@/components/layout/AppHeader";
 import NotificationSettings from "./_components/NotificationSettings";
+import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
 
 const UserSetting = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -29,15 +30,14 @@ const UserSetting = () => {
   }
 
   return (
-    <>
+    <div className="space-y-5">
       <AppHeader redirectId="" title="Settings" type="superAdmin" />
-
-      <MaxWidthWrapper className="space-y-3 mt-10 md:mt-0">
-        <AppBreadcrumb items={[{ href: "/settings", label: "Settings" }]} />
+      <DashboardHeading heading="Settings" text="Manage your preferences and settings" />
+      <div className="space-y-3">
         <NotificationSettings />
         <ThemeSettings />
-      </MaxWidthWrapper>
-    </>
+      </div>
+    </div>
   );
 };
 

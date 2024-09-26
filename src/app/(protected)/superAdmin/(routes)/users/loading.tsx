@@ -1,10 +1,10 @@
 import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
 import TableSkeleton from "@/components/shared/TableSkeleton";
 
-export default function AdminPanelLoading() {
+export default function SuperAdminUsersLoading() {
   return (
     <div className="space-y-5">
-      <DashboardHeading heading="Reviews" text="Manage your pharmacy reviews from here" />
+      <DashboardHeading heading="Users" text="Manage and view your customers info" />
       <TableSkeleton />
     </div>
   );

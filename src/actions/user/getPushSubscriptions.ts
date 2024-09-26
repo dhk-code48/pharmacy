@@ -2,7 +2,6 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
-import { revalidatePath } from "next/cache";
 
 export default async function getPushSubscription(endPoint: string) {
   const session = await auth();
@@ -17,7 +16,6 @@ export default async function getPushSubscription(endPoint: string) {
   });
 
   if (!subscription) throw new Error("Unexpected Error!");
-  revalidatePath("/");
 
   return subscription;
 }

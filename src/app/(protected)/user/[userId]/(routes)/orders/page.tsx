@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { OrdersTable } from "./_components/OrdersTable";
 import AppHeader from "@/components/layout/AppHeader";
 import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
+import TableSkeleton from "@/components/shared/TableSkeleton";
 
 type PageProps = {
   searchParams: SearchParams;
@@ -30,15 +31,15 @@ const SuspensePage = ({ searchParams }: PageProps) => {
 
 const UserOrdersPage = ({ searchParams, params }: PageProps & { params: { userId: string } }) => {
   return (
-    <>
+    <div className="space-y-5">
+      <DashboardHeading heading="Orders" text="Manage your orders from here" />
       <AppHeader redirectId={params.userId} title="Orders" type="user" />
-      <DashboardHeading heading="Orders" text="Manage your orders" />
       <ErrorBoundary>
-        <Suspense fallback={<Skeleton className="size-full" />}>
+        <Suspense fallback={<TableSkeleton />}>
           <SuspensePage searchParams={searchParams} />
         </Suspense>
       </ErrorBoundary>
-    </>
+    </div>
   );
 };
 

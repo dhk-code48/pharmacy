@@ -8,6 +8,7 @@ import * as z from "zod";
 import { PrescriptionsTable } from "./_components/PrescriptionTable";
 import AppHeader from "@/components/layout/AppHeader";
 import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
+import TableSkeleton from "@/components/shared/TableSkeleton";
 
 type PageProps = {
   searchParams: SearchParams;
@@ -37,7 +38,7 @@ const UserPrescriptionsPage = ({ searchParams, params }: PageProps & { params: {
       <AppHeader redirectId={params.userId} title="Prescriptions" type="user" />
       <DashboardHeading heading="Prescriptions" text="Manage and view your prescriptions" />
       <ErrorBoundary>
-        <Suspense fallback={<Skeleton className="size-full" />}>
+        <Suspense fallback={<TableSkeleton />}>
           <SuspensePage searchParams={searchParams} />
         </Suspense>
       </ErrorBoundary>

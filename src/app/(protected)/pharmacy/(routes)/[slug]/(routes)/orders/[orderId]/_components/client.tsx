@@ -1,12 +1,9 @@
 "use client";
 import React from "react";
-import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
 import OrderDetails from "./OrderDetails";
-import InvoiceDetails from "./InvoiceDetails";
 import OrderProgress from "./OrderProgress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { FileText } from "lucide-react";
 import { PharmacyOrder } from "@/types";
 import OrderPrescription from "./OrderPrescription";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -56,7 +53,7 @@ export default function PharmacyOrderClient({ order }: { order: PharmacyOrder })
   }
 
   return (
-    <MaxWidthWrapper className="space-y-10 mx-auto">
+    <div className="space-y-10">
       <div className="flex justify-between items-center">
         <div>
           <h3 className="text-xl font-semibold">Order Id: O-{order.id}</h3>
@@ -116,6 +113,6 @@ export default function PharmacyOrderClient({ order }: { order: PharmacyOrder })
           <Icons.checks className="mr-2 size-6" /> Check Delivered And Completed
         </Button>
       )}
-    </MaxWidthWrapper>
+    </div>
   );
 }

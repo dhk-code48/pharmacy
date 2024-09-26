@@ -1,16 +1,15 @@
-import { AppBreadcrumb } from "@/components/layout/AppBreadcrumb";
 import AppHeader from "@/components/layout/AppHeader";
-import React, { Suspense, use } from "react";
+import React from "react";
 import DashboardClient from "../_components/DashboardClient";
-import { getDashboardAnalytics } from "@/actions/superadmin/dashboardAnalytics";
+import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
 
 const SuperAdminDashboard = () => {
   return (
-    <>
+    <div className="space-y-5">
       <AppHeader redirectId="" title="Dashboard" type="superAdmin" />
-      <AppBreadcrumb items={[{ href: "/", label: "Dashboard" }]} />
+      <DashboardHeading heading="Dashboard" text="View your website activity and stats" />
       <DashboardClient />
-    </>
+    </div>
   );
 };
 

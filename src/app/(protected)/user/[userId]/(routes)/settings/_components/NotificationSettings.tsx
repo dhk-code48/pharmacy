@@ -8,17 +8,22 @@ import { urlBase64ToUint8Array } from "@/lib/utils";
 import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
 import { AppBreadcrumb } from "@/components/layout/AppBreadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
-const NotificationSettings = () => {
+
+const UserSetting = () => {
   const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
   const [isSubscribed, setIsSubscribed] = useState(false);
+
   useEffect(() => {
     if ("serviceWorker" in navigator && "PushManager" in window) {
       registerServiceWorker();
     }
   }, []);
+
   async function registerServiceWorker() {
     const registration = await navigator.serviceWorker.register("/sw.js", {
       scope: "/",
@@ -27,6 +32,7 @@ const NotificationSettings = () => {
     const sub = await registration.pushManager.getSubscription();
     if (sub) setIsSubscribed(true);
   }
+
   const {
     isPending: pushSubPending,
     isError: pushSubError,
@@ -38,6 +44,7 @@ const NotificationSettings = () => {
       setIsSubscribed(!!data);
     },
   });
+
   const { mutate: server_SubscribeUser, isPending: subscribeLoading } = useMutation({
     mutationFn: subscribeUser,
     onMutate: (variables) => {
@@ -50,6 +57,7 @@ const NotificationSettings = () => {
       mutate(navigator.userAgent);
     },
   });
+
   const { mutate: server_UnSubscribeUser, isPending: unsubscribeLoading } = useMutation({
     mutationFn: unsubscribeUser,
     onMutate: (variables) => {
@@ -62,6 +70,7 @@ const NotificationSettings = () => {
       mutate(navigator.userAgent);
     },
   });
+
   async function subscribeToPush() {
     try {
       console.log("KEYS=", process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!);
@@ -77,12 +86,15 @@ const NotificationSettings = () => {
       console.error("Subscription failed:", error);
     }
   }
+
   async function unsubscribeFromPush() {
     try {
       const registration = await navigator.serviceWorker.ready;
       const sub = await registration.pushManager.getSubscription();
+
       if (sub) {
         await sub.unsubscribe();
+
         server_UnSubscribeUser({ sub, userAgent: navigator.userAgent });
       }
     } catch (error) {
@@ -90,6 +102,7 @@ const NotificationSettings = () => {
       console.error("Unsubscription failed:", error);
     }
   }
+
   useEffect(() => {
     async function fetchSub() {
       const registration = await navigator.serviceWorker.ready;
@@ -98,6 +111,7 @@ const NotificationSettings = () => {
     }
     fetchSub();
   }, [mutate]);
+
   const handleSwitchChange = (checked: boolean) => {
     if (checked) {
       subscribeToPush();
@@ -105,18 +119,21 @@ const NotificationSettings = () => {
       unsubscribeFromPush();
     }
   };
+
   return isMounted ? (
-    <div className="flex items-center justify-between border px-3 py-4 rounded-xl">
-      <div>
-        <strong>Notifications</strong>
-        <p className="text-xs">Get notified and track your order status</p>
+    <>
+      <div className="flex items-center justify-between border px-3 py-4 rounded-xl">
+        <div>
+          <strong>Notifications</strong>
+          <p className="text-xs">Get notified and track your order status</p>
+        </div>
+        {pushSubPending ? (
+          <Skeleton className="w-10 h-5 rounded-2xl" />
+        ) : (
+          <Switch defaultChecked={pushSubscription ? true : false} onCheckedChange={handleSwitchChange} />
+        )}
       </div>
-      {pushSubPending ? (
-        <Skeleton className="w-10 h-5 rounded-2xl" />
-      ) : (
-        <Switch defaultChecked={pushSubscription ? true : false} onCheckedChange={handleSwitchChange} />
-      )}
-    </div>
+    </>
   ) : (
     <MaxWidthWrapper className="space-y-3">
       <Skeleton className="w-full h-10" />
@@ -124,4 +141,5 @@ const NotificationSettings = () => {
     </MaxWidthWrapper>
   );
 };
-export default NotificationSettings;
+
+export default UserSetting;

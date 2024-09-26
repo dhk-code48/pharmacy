@@ -34,7 +34,7 @@ export async function subscribeUser({ sub, userAgent }: { sub: PushSubscriptionJ
   return newSubscription;
 }
 
-export async function unsubscribeUser({ sub, userAgent }: { sub: PushSubscription | null; userAgent: string }) {
+export async function unsubscribeUser({ sub, userAgent }: { sub: PushSubscriptionJSON | null; userAgent: string }) {
   const session = await auth();
 
   if (!session?.user.id) throw new Error("UnAuthorized!!");

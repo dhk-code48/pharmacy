@@ -40,7 +40,7 @@ export default function Dashboard() {
   }
 
   return (
-    <MaxWidthWrapper className="space-y-5">
+    <>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-5">
         <DashboardCard icon="pharmacy" title="Total Pharmacy" value={dashboardSummary.totalPharmacies} />
         <DashboardCard icon="package" title="Total Order" value={dashboardSummary.totalOrders} />
@@ -133,7 +133,7 @@ export default function Dashboard() {
       </div>
 
       {/* ... (Quick Actions card remains unchanged) ... */}
-    </MaxWidthWrapper>
+    </>
   );
 }
 

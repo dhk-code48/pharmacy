@@ -33,9 +33,7 @@ export default function SettingsClient({ params, user }: { params: { userId: str
 
   return (
     <>
-      <AppHeader redirectId={params.userId} type="user" title="Settings" />
-      <MaxWidthWrapper className="space-y-3">
-        <AppBreadcrumb items={[{ href: "/settings", label: "Settings" }]} />
+      <div className="space-y-3">
         <NotificationSettings />
         <ThemeSettings />
         <div className="grid gap-5 md:grid-cols-2 items-start justify-between border px-3 py-4 rounded-xl">
@@ -45,7 +43,7 @@ export default function SettingsClient({ params, user }: { params: { userId: str
           </div>
           <UserForm user={user} />
         </div>
-      </MaxWidthWrapper>
+      </div>
     </>
   );
 }

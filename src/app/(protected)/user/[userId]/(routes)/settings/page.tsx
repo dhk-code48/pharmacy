@@ -11,15 +11,15 @@ const SettingSuspense = ({ params }: { params: { userId: string } }) => {
 };
 const SettingsPage = ({ params }: { params: { userId: string } }) => {
   return (
-    <>
+    <div className="space-y-5">
       <AppHeader redirectId={params.userId} title="Settings" type="user" />
-      <DashboardHeading heading="Settings" />
+      <DashboardHeading heading="Settings" text="Manage your settings from here" />
       <ErrorBoundary>
         <Suspense>
           <SettingSuspense params={params}></SettingSuspense>
         </Suspense>
       </ErrorBoundary>
-    </>
+    </div>
   );
 };
 

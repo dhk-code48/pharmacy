@@ -1,17 +1,14 @@
+import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
+import CardSkeletons from "@/components/sections/skeletons/CardSkeletons";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function AdminPanelLoading() {
+export default function UserDashboardLoading() {
   return (
     <>
-      <div className="flex flex-col gap-5">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Skeleton className="h-32 w-full rounded-lg" />
-          <Skeleton className="h-32 w-full rounded-lg" />
-          <Skeleton className="h-32 w-full rounded-lg" />
-          <Skeleton className="h-32 w-full rounded-lg" />
-        </div>
-        <Skeleton className="h-[500px] w-full rounded-lg" />
-        <Skeleton className="h-[500px] w-full rounded-lg" />
+      <DashboardHeading heading="Dashboard" text="Manage and view your activity" />
+      <CardSkeletons cards={2} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <Skeleton className="w-full h-72" />
       </div>
     </>
   );

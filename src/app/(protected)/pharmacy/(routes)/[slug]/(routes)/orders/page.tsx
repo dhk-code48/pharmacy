@@ -1,11 +1,12 @@
 import { getPaginatedPharmacyOrders } from "@/actions/pharmacy/getPaginatedOrders";
 import { OrdersTable } from "./_components/OrdersTable";
 import ErrorBoundary from "@/components/shared/ErrorBoundary";
-import { Skeleton } from "@/components/ui/skeleton";
 import { SearchParams } from "@/types/data-table";
 import React, { Suspense } from "react";
 import * as z from "zod";
 import AppHeader from "@/components/layout/AppHeader";
+import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
+import TableSkeleton from "@/components/shared/TableSkeleton";
 
 const searchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -36,10 +37,12 @@ const SuspensePage = ({ searchParams, params }: PageProps) => {
 
 const PharmacyOrders = ({ searchParams, params }: PageProps) => {
   return (
-    <div>
+    <div className="space-y-5">
       <AppHeader redirectId={params.slug} type="pharmacy" title="Orders" />
+      <DashboardHeading heading="Orders" text="Manage your pharmacy orders from here" />
+
       <ErrorBoundary>
-        <Suspense fallback={<Skeleton className="size-full" />}>
+        <Suspense fallback={<TableSkeleton />}>
           <SuspensePage searchParams={searchParams} params={params} />
         </Suspense>
       </ErrorBoundary>

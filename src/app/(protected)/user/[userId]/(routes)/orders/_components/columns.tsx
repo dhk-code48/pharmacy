@@ -1,13 +1,18 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import { CellAction } from "./cell-action";
+
 import { formatDate } from "@/lib/format";
-import { CldImage } from "next-cloudinary";
 import { ORDER_STATUS_COLOR, PAYMENT_STATUS } from "@/config";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { PaginatedUserOrder } from "@/types";
+import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Icons } from "@/components/shared/Icons";
+import dynamic from "next/dynamic";
+
+const CellAction = dynamic(() => import("./cell-action"), {
+  ssr: false,
+});
 
 export function getColumns(): ColumnDef<PaginatedUserOrder>[] {
   return columns;
@@ -73,10 +78,20 @@ export const columns: ColumnDef<PaginatedUserOrder>[] = [
   {
     accessorKey: "createdAt",
     header: "Created At",
-    cell: ({ row }) => <span className="text-muted-foreground">{formatDate(new Date(), "DD-DDDD-MMMM-YYYY")}</span>,
+    cell: ({ row }) => <span className="text-muted-foreground">{formatDate(row.original.createdAt, "DD-DDDD-MMMM-YYYY")}</span>,
   },
   {
     id: "actions",
-    cell: ({ row }) => <CellAction order={row.original} />,
+    cell: ({ row }) => (
+      <DropdownMenu modal={false}>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <Icons.moreVertical className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <CellAction order={row.original} />
+      </DropdownMenu>
+    ),
   },
 ];

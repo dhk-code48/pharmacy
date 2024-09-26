@@ -5,6 +5,8 @@ import React, { Suspense } from "react";
 import * as z from "zod";
 import { UsersTable } from "./_components/PharmacyTable";
 import { getPaginatedUsers } from "@/actions/superadmin/getPaginatedUsers";
+import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
+import TableSkeleton from "@/components/shared/TableSkeleton";
 
 const searchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -28,16 +30,16 @@ const SuspensePage = ({ searchParams }: PageProps) => {
   );
 };
 
-const SuperAdminPharmacies = ({ searchParams }: PageProps) => {
+const SuperAdminUsers = ({ searchParams }: PageProps) => {
   return (
     <div>
-      <AppHeader redirectId="" title="Pharmacies" type="superAdmin" />
-      <AppBreadcrumb items={[{ href: "/superAdmin/pharmacies", label: "Pharmacies" }]} />
-      <Suspense>
+      <AppHeader redirectId="" title="Users" type="superAdmin" />
+      <DashboardHeading heading="Users" text="Manage and view your customers info" />
+      <Suspense fallback={<TableSkeleton />}>
         <SuspensePage searchParams={searchParams} />
       </Suspense>
     </div>
   );
 };
 
-export default SuperAdminPharmacies;
+export default SuperAdminUsers;

@@ -20,6 +20,7 @@ import {
   IconDeviceIpadDown,
   IconDeviceLaptop,
   IconDeviceMobileDollar,
+  IconDots,
   IconEye,
   IconFile,
   IconFileCheck,
@@ -71,6 +72,7 @@ export const Icons = {
   cancel: IconCancel,
   pcInstall: IconDeviceDesktopDown,
   money: IconCash,
+  moreVertical: IconDots,
   verified: (props: React.HTMLAttributes<SVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" id="verified" {...props}>
       <g clip-path="url(#a)">

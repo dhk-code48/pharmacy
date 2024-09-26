@@ -1,9 +1,8 @@
 import getPharmacyOrder from "@/actions/pharmacy/getOrder";
-import SkeletonLoader from "@/components/forms/SkeletonLoader";
 import ErrorBoundary from "@/components/shared/ErrorBoundary";
-import { Skeleton } from "@/components/ui/skeleton";
 import React, { Suspense, use } from "react";
 import PharmacyOrderClient from "./_components/client";
+import PharmacyOrderLoading from "./loading";
 
 type PageProps = {
   params: {
@@ -21,7 +20,7 @@ const SuspensePage = ({ params }: PageProps) => {
 const PharmacyOrderPage = ({ params }: PageProps) => {
   return (
     <ErrorBoundary>
-      <Suspense fallback={<SkeletonLoader />}>
+      <Suspense fallback={<PharmacyOrderLoading />}>
         <SuspensePage params={params} />
       </Suspense>
     </ErrorBoundary>
