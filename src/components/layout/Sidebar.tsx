@@ -3,7 +3,7 @@
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { usePathname } from "next/navigation";
 import React, { FC, Fragment, useEffect, useState } from "react";
-import { Button, buttonVariants } from "../ui/button";
+import { Button } from "../ui/button";
 import { Icons } from "../shared/Icons";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { ScrollArea } from "../ui/scroll-area";
@@ -12,11 +12,10 @@ import Logo from "./Logo";
 import { SidebarLinks, SidebarNavItem } from "@/types";
 import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
-import { UserAccount } from "./UserAccount";
-import { ThemeToggle } from "./ThemeToggle";
-import { Session, User } from "next-auth";
+import { Session } from "next-auth";
 import InstallPWAButton from "../shared/InstallPwa";
 import FeedbackDialog from "./FeedbackDialog";
+import dynamic from "next/dynamic";
 
 type SidebarProps = {
   prefix: string;
@@ -76,56 +75,28 @@ const Sidebar: FC<SidebarProps> = ({ prefix, links }) => {
   );
 };
 
+const SidebarContent = dynamic(() => import("./LazyMobileSidebarContent"), { ssr: false });
+
 export function MobileSheetSidebar({ links, prefix, user }: SidebarProps & { user?: Session["user"] }) {
   const [open, setOpen] = useState(false);
-  const { isSm, isMobile } = useMediaQuery();
+  return (
+    <TooltipProvider delayDuration={0}>
+      <Sheet open={open} onOpenChange={(isOpen) => setOpen(isOpen)}>
+        <SheetTrigger asChild>
+          <Button variant="outline" size="icon" className="size-9 shrink-0 md:hidden" onClick={() => setOpen(true)}>
+            <Icons.menu className="size-5" />
+            <span className="sr-only">Toggle navigation menu</span>
+          </Button>
+        </SheetTrigger>
 
-  console.log("PREFIX ==> ", prefix);
-
-  if (isSm || isMobile) {
-    return (
-      <TooltipProvider delayDuration={0}>
-        <Sheet open={open} onOpenChange={(isOpen) => setOpen(isOpen)}>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="icon" className="size-9 shrink-0 md:hidden">
-              <Icons.menu className="size-5" />
-              <span className="sr-only">Toggle navigation menu</span>
-            </Button>
-          </SheetTrigger>
+        {open && (
           <SheetContent side="left" className="flex flex-col p-0">
-            <ScrollArea className="h-full overflow-y-auto">
-              <div className="flex h-screen flex-col">
-                <nav className="flex flex-1 flex-col gap-y-8 p-6 text-lg font-medium">
-                  <Link href="#" className="flex items-center gap-2 text-lg font-semibold">
-                    <Logo />
-                  </Link>
-                  {links.map((section) => (
-                    <section key={section.title} className="flex flex-col gap-0.5">
-                      <p className="text-xs text-muted-foreground">{section.title}</p>
-
-                      {section.items.map((item) => (
-                        <SidebarLink key={`mobile-sidebar-` + item.href} prefix={prefix} isSidebarExpanded item={item} />
-                      ))}
-                    </section>
-                  ))}
-                  <section className="space-y-2 flex flex-col">
-                    <InstallPWAButton isSidebarExpanded={false} />
-                    {!!user?.pharmacyId && (
-                      <Link className={buttonVariants({ variant: "outline" })} href="/pharmacy/create">
-                        Own A pharmacy?, Create One
-                      </Link>
-                    )}
-                  </section>
-                </nav>
-              </div>
-            </ScrollArea>
+            <SidebarContent links={links} prefix={prefix} pharmacyId={user?.pharmacyId} />
           </SheetContent>
-        </Sheet>
-      </TooltipProvider>
-    );
-  }
-
-  return <div className="flex size-9 animate-pulse rounded-lg bg-muted md:hidden" />;
+        )}
+      </Sheet>
+    </TooltipProvider>
+  );
 }
 
 export const SidebarLink = ({ item, isSidebarExpanded, prefix = "" }: { item: SidebarLinks; isSidebarExpanded: boolean; prefix?: string }) => {

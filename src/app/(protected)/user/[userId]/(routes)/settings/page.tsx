@@ -5,9 +5,9 @@ import getUserInfo from "@/actions/user/getUser";
 import AppHeader from "@/components/layout/AppHeader";
 import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
 
-const SettingSuspense = ({ params }: { params: { userId: string } }) => {
+const SettingSuspense = () => {
   const userInfo = use(getUserInfo());
-  return <SettingsClient params={params} user={userInfo} />;
+  return <SettingsClient user={userInfo} />;
 };
 const SettingsPage = ({ params }: { params: { userId: string } }) => {
   return (
@@ -16,7 +16,7 @@ const SettingsPage = ({ params }: { params: { userId: string } }) => {
       <DashboardHeading heading="Settings" text="Manage your settings from here" />
       <ErrorBoundary>
         <Suspense>
-          <SettingSuspense params={params}></SettingSuspense>
+          <SettingSuspense />
         </Suspense>
       </ErrorBoundary>
     </div>

@@ -3,9 +3,8 @@
 import { type ColumnDef } from "@tanstack/react-table";
 
 import { formatDate } from "@/lib/format";
-import { CldImage } from "next-cloudinary";
-
-import { Media, Prescription } from "@prisma/client";
+import { PHARMACY_STATUS_COLOR } from "@/config";
+import { SuperAdminPaginatedOrderIssue } from "@/types";
 import dynamic from "next/dynamic";
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -15,19 +14,19 @@ const CellAction = dynamic(() => import("./cell-action"), {
   ssr: false,
 });
 
-export function getColumns(): ColumnDef<Prescription & { images: Media[] }>[] {
+export function getColumns(): ColumnDef<SuperAdminPaginatedOrderIssue>[] {
   return columns;
 }
 
-export const columns: ColumnDef<Prescription & { images: Media[] }>[] = [
+export const columns: ColumnDef<SuperAdminPaginatedOrderIssue>[] = [
   {
-    accessorKey: "images",
-    header: "Prescription",
-    cell: ({ row }) => <CldImage alt="prescription" src={row.original.images[0].image} width={50} height={50} className="size-10 rounded-xl" />,
+    accessorKey: "id",
+    header: "Pharmacy Id",
+    cell: ({ row }) => <span>OI-{row.original.id}</span>,
   },
   {
-    accessorKey: "label",
-    header: "Label",
+    accessorKey: "topic",
+    header: "Topic",
   },
 
   {
@@ -56,7 +55,7 @@ export const columns: ColumnDef<Prescription & { images: Media[] }>[] = [
             <Icons.moreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <CellAction prescription={row.original} />
+        <CellAction issues={row.original} />
       </DropdownMenu>
     ),
   },

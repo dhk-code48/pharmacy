@@ -1,25 +1,28 @@
 "use client";
+
 import React, { Suspense } from "react";
-import OrderDetails from "./OrderDetails";
-import OrderProgress from "./OrderProgress";
+import dynamic from "next/dynamic";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { PharmacyOrder } from "@/types";
-import OrderPrescription from "./OrderPrescription";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import OrderTimeline from "@/components/sections/dashboard/OrderTimeline";
-import InvoiceForm from "@/components/forms/InvoiceForm";
 import { Badge } from "@/components/ui/badge";
-import InvoiceUi from "@/components/shared/Invoice";
 import { toast } from "sonner";
 import shipOrder from "@/actions/pharmacy/shipOrder";
 import deliverAndCompleteOrder from "@/actions/pharmacy/deliverAndCompleteOrder";
 import setPaymentPaid from "@/actions/pharmacy/setPaymentPaid";
+import { OrderStatus } from "@prisma/client";
 
-// Lazy load icons with React.lazy
-const IconTruck = React.lazy(() => import("@tabler/icons-react").then((mod) => ({ default: mod.IconTruck })));
-const IconMoney = React.lazy(() => import("@tabler/icons-react").then((mod) => ({ default: mod.IconCash })));
-const IconChecks = React.lazy(() => import("@tabler/icons-react").then((mod) => ({ default: mod.IconChecks })));
+const OrderDetails = dynamic(() => import("./OrderDetails"));
+const OrderProgress = dynamic(() => import("./OrderProgress"));
+const OrderPrescription = dynamic(() => import("./OrderPrescription"));
+const OrderTimeline = dynamic(() => import("@/components/sections/dashboard/OrderTimeline"));
+const InvoiceForm = dynamic(() => import("@/components/forms/InvoiceForm"));
+const InvoiceUi = dynamic(() => import("@/components/shared/Invoice"));
+
+const IconTruck = dynamic(() => import("@tabler/icons-react").then((mod) => ({ default: mod.IconTruck })));
+const IconMoney = dynamic(() => import("@tabler/icons-react").then((mod) => ({ default: mod.IconCash })));
+const IconChecks = dynamic(() => import("@tabler/icons-react").then((mod) => ({ default: mod.IconChecks })));
 
 export default function PharmacyOrderClient({ order }: { order: PharmacyOrder }) {
   async function onShipping() {
@@ -71,36 +74,77 @@ export default function PharmacyOrderClient({ order }: { order: PharmacyOrder })
         </TabsList>
 
         <TabsContent value="details">
-          <OrderDetails order={order} />
+          <Suspense fallback={<div>Loading details...</div>}>
+            <OrderDetails order={order} />
+          </Suspense>
         </TabsContent>
 
         <TabsContent value="invoice">
-          {order.invoice ? (
-            <InvoiceUi invoice={order.invoice} order={order} pharmacy={order.pharmacy} />
-          ) : (
-            <>
-              <p className="italic text-muted-foreground text-center">Invoice Not Provided Yet!!</p>
-              <InvoiceForm orderId={order.id} pharmacyId={order.pharmacy.id} prescription={order.prescription} triggerClassName={buttonVariants()} />
-            </>
-          )}
+          <Suspense fallback={<div>Loading invoice...</div>}>
+            <InvoiceTab order={order} />
+          </Suspense>
         </TabsContent>
 
         <TabsContent value="prescription">
-          <OrderPrescription prescription={order.prescription} />
+          <Suspense fallback={<div>Loading prescription...</div>}>
+            <OrderPrescription prescription={order.prescription} />
+          </Suspense>
         </TabsContent>
 
         <TabsContent value="timeline">
-          <Card>
-            <CardHeader>
-              <CardTitle>Order Timeline</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <OrderTimeline currentStatus={order.status} />
-            </CardContent>
-          </Card>
+          <Suspense fallback={<div>Loading timeline...</div>}>
+            <TimelineTab status={order.status} />
+          </Suspense>
         </TabsContent>
       </Tabs>
 
+      <ActionButtons order={order} onShipping={onShipping} onDeliveredAndComplete={onDeliveredAndComplete} onPaymentPaid={onPaymentPaid} />
+    </div>
+  );
+}
+
+function InvoiceTab({ order }: { order: PharmacyOrder }) {
+  return order.invoice ? (
+    <InvoiceUi invoice={order.invoice} order={order} pharmacy={order.pharmacy} />
+  ) : (
+    <>
+      <p className="italic text-muted-foreground text-center">Invoice Not Provided Yet!!</p>
+      <InvoiceForm
+        orderId={order.id}
+        pharmacyId={order.pharmacy.id}
+        prescription={order.prescription}
+        triggerClassName="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+      />
+    </>
+  );
+}
+
+function TimelineTab({ status }: { status: OrderStatus }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Order Timeline</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <OrderTimeline currentStatus={status} />
+      </CardContent>
+    </Card>
+  );
+}
+
+function ActionButtons({
+  order,
+  onShipping,
+  onDeliveredAndComplete,
+  onPaymentPaid,
+}: {
+  order: PharmacyOrder;
+  onShipping: () => void;
+  onDeliveredAndComplete: () => void;
+  onPaymentPaid: () => void;
+}) {
+  return (
+    <>
       {order.status === "ORDER_CONFIRMED" && (
         <Button variant="outline" disabled={!order.invoice} onClick={onShipping}>
           <Suspense fallback={<span>Loading...</span>}>
@@ -127,6 +171,6 @@ export default function PharmacyOrderClient({ order }: { order: PharmacyOrder })
           Check Delivered And Completed
         </Button>
       )}
-    </div>
+    </>
   );
 }

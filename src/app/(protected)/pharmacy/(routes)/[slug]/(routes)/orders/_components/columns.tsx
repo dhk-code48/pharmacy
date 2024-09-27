@@ -77,7 +77,7 @@ export const columns: ColumnDef<PaginatedPharmacyOrder>[] = [
   {
     accessorKey: "createdAt",
     header: "Created At",
-    cell: ({ row }) => <span className="text-muted-foreground">{formatDate(new Date(), "YYYY-MM-DD")}</span>,
+    cell: ({ row }) => <span className="text-muted-foreground">{formatDate(row.original.createdAt, "YYYY-MM-DD")}</span>,
   },
   {
     id: "actions",

@@ -18,10 +18,11 @@ const UserInfo: FC<{ user: User; addresses: UserAddress[] }> = ({ user, addresse
         <Icons.phone size={18} />
         {user.phoneNumber}
       </div>
-      <div className="text-left p-5 w-full">
-        <p className="text-sm">{addresses.length > 1 ? "Recent Address Used By User" : "User Address"} </p>
-        {addresses.length > 0 ? (
-          addresses.map((address, index) => {
+      {addresses.length > 0 && (
+        <div className="text-left p-5 w-full">
+          <p className="text-sm">{addresses.length > 1 ? "Recent Address Used By User" : "User Address"} </p>
+
+          {addresses.map((address, index) => {
             return (
               <div key={address.id} className="bg-muted px-5 py-3 rounded-lg">
                 <p className="text-sm font-semibold text-muted-foreground">Id: {formatNumber(index + 1)}</p>
@@ -30,11 +31,9 @@ const UserInfo: FC<{ user: User; addresses: UserAddress[] }> = ({ user, addresse
                 <p>Province : {formatAddress(address as UserAddress, "{{S}}")}</p>
               </div>
             );
-          })
-        ) : (
-          <p className="italic text-muted-foreground text-sm">Not Address Found</p>
-        )}
-      </div>
+          })}
+        </div>
+      )}
     </div>
   );
 };

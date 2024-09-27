@@ -38,6 +38,7 @@ model User {
   invoices Invoice[]
 
   pharmacy Pharmacy?
+  orderIssues OrderIssue[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -173,6 +174,8 @@ model Pharmacy {
   addressId Int             @unique
   address   PharmacyAddress @relation(fields: [addressId], references: [id])
 
+  orderIssues    OrderIssue[]
+
   locationId Int              @unique
   location   PharmacyLocation @relation(fields: [locationId], references: [id])
 
@@ -233,6 +236,9 @@ model Order {
 
   invoiceId Int?     @unique
   invoice   Invoice? @relation(fields: [invoiceId], references: [id])
+
+  
+  orderIssue   OrderIssue?
 
   pharmacySlug String
   pharmacy     Pharmacy @relation(fields: [pharmacySlug], references: [slug])
@@ -351,6 +357,24 @@ model FeedBack {
 
   @@index([userId, from, topic])
   @@index([createdAt])
+}
+model OrderIssue {
+  id      Int @id @default(autoincrement())
+
+  topic         String
+  description   String
+
+  orderId Int     @unique
+  order   Order   @relation(references: [id],fields: [orderId])
+
+  userId  String  @unique
+  user    User    @relation(references: [id],fields: [userId])
+
+  pharmacyId Int     @unique
+  pharmacy   Pharmacy   @relation(references: [id],fields: [pharmacyId])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
 }
 
 enum FeedBackTopic {

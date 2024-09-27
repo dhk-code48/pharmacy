@@ -1,32 +1,26 @@
 "use client";
-import React from "react";
-import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
-import OrderDetails from "./OrderDetails";
-import InvoiceDetails from "./InvoiceDetails";
-import OrderProgress from "./OrderProgress";
+
+import React, { Suspense } from "react";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { toast } from "sonner";
+import { OrderStatus } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { UserOrder } from "@/types";
-import OrderPrescription from "./OrderPrescription";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import OrderTimeline from "@/components/sections/dashboard/OrderTimeline";
-import InvoiceUi from "@/components/shared/Invoice";
-import { Icons } from "@/components/shared/Icons";
-import Image from "next/image";
-import { OrderStatus } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { UserOrder } from "@/types";
+import { Icons } from "@/components/shared/Icons";
+import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
 import cashOnDelivery from "@/actions/user/cashOnDelivery";
 
-import ReviewForm from "@/components/forms/ReviewForm";
+const OrderDetails = dynamic(() => import("./OrderDetails"));
+const OrderProgress = dynamic(() => import("./OrderProgress"));
+const OrderPrescription = dynamic(() => import("./OrderPrescription"));
+const OrderTimeline = dynamic(() => import("@/components/sections/dashboard/OrderTimeline"));
+const InvoiceUi = dynamic(() => import("@/components/shared/Invoice"));
+const ReviewForm = dynamic(() => import("@/components/forms/ReviewForm"));
 
-/**
- * UserOrderClient Component
- * Main component for displaying the user order, progress, invoice, and prescription details.
- *
- * @param order - UserOrder object
- */
 export default function UserOrderClient({ order }: { order: UserOrder }) {
   const canceledStatuses: OrderStatus[] = ["CANCELLED_BY_USER", "OUT_OF_STOCK", "RETURNED"];
   const isCanceledStatus = canceledStatuses.includes(order.status);
@@ -66,46 +60,74 @@ export default function UserOrderClient({ order }: { order: UserOrder }) {
         </TabsList>
 
         <TabsContent value="details">
-          <OrderDetails order={order} />
+          <Suspense fallback={<div>Loading details...</div>}>
+            <OrderDetails order={order} />
+          </Suspense>
         </TabsContent>
 
         <TabsContent value="invoice">
-          {order.invoice ? (
-            <InvoiceUi invoice={order.invoice} order={order} pharmacy={order.pharmacy} />
-          ) : (
-            <div className="text-center my-5 space-y-2">
-              <h1 className="text-muted-foreground italic">No invoice provided yet!</h1>
-            </div>
-          )}
+          <Suspense fallback={<div>Loading invoice...</div>}>
+            <InvoiceTab order={order} />
+          </Suspense>
         </TabsContent>
+
         <TabsContent value="prescription">
-          <OrderPrescription prescription={order.prescription} />
+          <Suspense fallback={<div>Loading prescription...</div>}>
+            <OrderPrescription prescription={order.prescription} />
+          </Suspense>
         </TabsContent>
+
         <TabsContent value="timeline">
-          <Card>
-            <CardHeader>
-              <CardTitle>Order Timeline</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <OrderTimeline currentStatus={order.status} />
-            </CardContent>
-          </Card>
+          <Suspense fallback={<div>Loading timeline...</div>}>
+            <TimelineTab status={order.status} />
+          </Suspense>
         </TabsContent>
       </Tabs>
 
-      <div className="flex items-center justify-between">
-        {!isCanceledStatus && (
-          <div className="flex items-center gap-3">
-            <Button variant="outline" disabled={true} className="gap-3" size="lg">
-              <Image alt="e-sewa" src="/icons/esewa.png" width={50} height={50} className="size-6" /> Check Out
-            </Button>
-            <Button variant="outline" disabled={!order.invoice} onClick={onCashOnDelivery}>
-              Continue With Cash On Delivery
-            </Button>
-          </div>
-        )}
-        <ReviewForm pharmacyId={order.pharmacy.id} />
-      </div>
+      <ActionButtons order={order} isCanceledStatus={isCanceledStatus} onCashOnDelivery={onCashOnDelivery} />
     </MaxWidthWrapper>
+  );
+}
+
+function InvoiceTab({ order }: { order: UserOrder }) {
+  return order.invoice ? (
+    <InvoiceUi invoice={order.invoice} order={order} pharmacy={order.pharmacy} />
+  ) : (
+    <div className="text-center my-5 space-y-2">
+      <h1 className="text-muted-foreground italic">No invoice provided yet!</h1>
+    </div>
+  );
+}
+
+function TimelineTab({ status }: { status: OrderStatus }) {
+  return (
+    <div className="card">
+      <div className="card-header">
+        <h2 className="card-title">Order Timeline</h2>
+      </div>
+      <div className="card-content">
+        <OrderTimeline currentStatus={status} />
+      </div>
+    </div>
+  );
+}
+
+function ActionButtons({ order, isCanceledStatus, onCashOnDelivery }: { order: UserOrder; isCanceledStatus: boolean; onCashOnDelivery: () => void }) {
+  return (
+    <div className="flex items-center justify-between">
+      {!isCanceledStatus && (
+        <div className="flex items-center gap-3">
+          <Button variant="outline" disabled={true} className="gap-3" size="lg">
+            <Image alt="e-sewa" src="/icons/esewa.png" width={50} height={50} className="size-6" /> Check Out
+          </Button>
+          <Button variant="outline" disabled={!order.invoice} onClick={onCashOnDelivery}>
+            Continue With Cash On Delivery
+          </Button>
+        </div>
+      )}
+      <Suspense fallback={<div>Loading review form...</div>}>
+        <ReviewForm pharmacyId={order.pharmacy.id} />
+      </Suspense>
+    </div>
   );
 }

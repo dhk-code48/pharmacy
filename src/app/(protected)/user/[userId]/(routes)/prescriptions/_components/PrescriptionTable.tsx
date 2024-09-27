@@ -8,9 +8,6 @@ import { useDataTable } from "@/hooks/useDataTable";
 import type { DataTableFilterableColumn, DataTableSearchableColumn } from "@/types/data-table";
 import { Media, Prescription } from "@prisma/client";
 import { getPaginatedPrescriptions } from "@/actions/user/getPaginatedPrescriptions";
-import useIsMounted from "@/hooks/useMounted";
-import { Skeleton } from "@/components/ui/skeleton";
-
 const filterableColumns: DataTableFilterableColumn<Prescription>[] = [];
 
 type OrdersTableProps = {

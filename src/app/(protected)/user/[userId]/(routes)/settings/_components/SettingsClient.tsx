@@ -1,21 +1,19 @@
 "use client";
 
-import React, { useEffect, useState, useTransition, useCallback } from "react";
-import { Switch } from "@/components/ui/switch";
-import { urlBase64ToUint8Array } from "@/lib/utils";
+import React, { useEffect, useState } from "react";
 import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
-import { AppBreadcrumb } from "@/components/layout/AppBreadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
-import { Label } from "@/components/ui/label";
-import AppHeader from "@/components/layout/AppHeader";
-import ThemeSettings from "@/components/sections/dashboard/ThemeSettings";
-import { subscribeUser, unsubscribeUser } from "@/actions/pwa";
 import { User } from "@prisma/client";
-import UserForm from "./UserForm";
-import NotificationSettings from "./NotificationSettings";
+import dynamic from "next/dynamic";
 
-export default function SettingsClient({ params, user }: { params: { userId: string }; user: User }) {
+const NotificationSettings = dynamic(() => import("./NotificationSettings"), { ssr: false, loading: () => <Skeleton className="w-full h-10" /> });
+const ThemeSettings = dynamic(() => import("@/components/sections/dashboard/ThemeSettings"), {
+  ssr: false,
+  loading: () => <Skeleton className="w-full h-10" />,
+});
+const UserForm = dynamic(() => import("./UserForm"), { ssr: false, loading: () => <Skeleton className="w-full h-10" /> });
+
+export default function SettingsClient({ user }: { user: User }) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {

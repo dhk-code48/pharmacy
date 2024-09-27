@@ -40,7 +40,7 @@ export const columns: ColumnDef<PaginatedUser>[] = [
   {
     accessorKey: "createdAt",
     header: "Created At",
-    cell: ({ row }) => <span className="text-muted-foreground">{formatDate(new Date(), "DD-DDDD-MMMM-YYYY")}</span>,
+    cell: ({ row }) => <span className="text-muted-foreground">{formatDate(row.original.createdAt, "DD-DDDD-MMMM-YYYY")}</span>,
   },
   {
     id: "actions",

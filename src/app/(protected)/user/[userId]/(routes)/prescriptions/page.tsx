@@ -1,9 +1,7 @@
 import { getPaginatedPrescriptions } from "@/actions/user/getPaginatedPrescriptions";
-import { AppBreadcrumb } from "@/components/layout/AppBreadcrumb";
 import ErrorBoundary from "@/components/shared/ErrorBoundary";
-import { Skeleton } from "@/components/ui/skeleton";
 import { SearchParams } from "@/types/data-table";
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import * as z from "zod";
 import { PrescriptionsTable } from "./_components/PrescriptionTable";
 import AppHeader from "@/components/layout/AppHeader";

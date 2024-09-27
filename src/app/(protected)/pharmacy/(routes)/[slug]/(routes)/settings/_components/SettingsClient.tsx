@@ -1,12 +1,25 @@
 "use client";
 
 import React from "react";
-import ThemeSettings from "@/components/sections/dashboard/ThemeSettings";
+
 import { Pharmacy, User } from "@prisma/client";
-import PharmacyForm from "./PharmacyForm";
-import NotificationSettings from "./NotificationSettings";
 import useIsMounted from "@/hooks/useMounted";
 import SkeletonLoader from "@/components/forms/SkeletonLoader";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const NotificationSettings = dynamic(() => import("./NotificationSettings"), {
+  ssr: false,
+  loading: () => <Skeleton className="w-full h-20" />,
+});
+const ThemeSettings = dynamic(() => import("@/components/sections/dashboard/ThemeSettings"), {
+  ssr: false,
+  loading: () => <Skeleton className="w-full h-20" />,
+});
+const PharmacyForm = dynamic(() => import("./PharmacyForm"), {
+  ssr: false,
+  loading: () => <Skeleton className="w-full h-20" />,
+});
 
 export default function SettingsClient({ params, pharmacy }: { params: { slug: string }; pharmacy: Pharmacy & { user: User } }) {
   const isMounted = useIsMounted();

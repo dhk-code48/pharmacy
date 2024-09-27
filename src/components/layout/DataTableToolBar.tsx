@@ -5,10 +5,19 @@ import { type Table } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DataTableViewOptions } from "./DataTableViewOption";
 
-import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
 import type { DataTableFilterableColumn, DataTableSearchableColumn } from "@/types/data-table";
+import dynamic from "next/dynamic";
+import { Skeleton } from "../ui/skeleton";
+
+const DataTableFacetedFilter = dynamic(() => import("./DataTableFacetedFilter").then((mod) => mod.DataTableFacetedFilter), {
+  ssr: false,
+  loading: () => <Skeleton className="w-10 h-5" />,
+});
+const DataTableViewOptions = dynamic(() => import("./DataTableViewOption").then((mod) => mod.DataTableViewOptions), {
+  ssr: false,
+  loading: () => <Skeleton className="w-10 h-5" />,
+});
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -42,6 +51,7 @@ export default function DataTableToolbar<TData>({ table, filterableColumns = [],
                 table.getColumn(column.id ? String(column.id) : "") && (
                   <DataTableFacetedFilter
                     key={String(column.id)}
+                    // @ts-ignore
                     column={table.getColumn(column.id ? String(column.id) : "")}
                     title={column.title}
                     options={column.options}
@@ -56,6 +66,7 @@ export default function DataTableToolbar<TData>({ table, filterableColumns = [],
           </Button>
         )}
       </div>
+      {/* @ts-ignore */}
       <DataTableViewOptions table={table} />
     </div>
   );

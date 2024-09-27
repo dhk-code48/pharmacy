@@ -1,18 +1,39 @@
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdminPanelLoading() {
   return (
-    <>
-      <div className="flex flex-col gap-5">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Skeleton className="h-32 w-full rounded-lg" />
-          <Skeleton className="h-32 w-full rounded-lg" />
-          <Skeleton className="h-32 w-full rounded-lg" />
-          <Skeleton className="h-32 w-full rounded-lg" />
+    <div className="space-y-10 w-full container">
+      <div className="flex justify-between items-center">
+        <div>
+          <div className="text-xl font-semibold">
+            Order Id: <Skeleton className="w-10 h-5" />{" "}
+          </div>
+          <p className="text-xs text-muted-foreground">Manage order details and progress</p>
         </div>
-        <Skeleton className="h-[500px] w-full rounded-lg" />
-        <Skeleton className="h-[500px] w-full rounded-lg" />
+        <Badge>
+          <Skeleton className="size-full" />
+        </Badge>
       </div>
-    </>
+      <div className="mb-6">
+        <Label>Order Progress</Label>
+        <Skeleton className="w-full mt-2" />
+      </div>
+      <div className="w-full">
+        <div className="grid w-full grid-cols-4">
+          <div className="p-3">Details</div>
+          <div className="p-3">Invoice</div>
+          <div className="p-3">Prescription</div>
+          <div className="p-3">Timeline</div>
+        </div>
+
+        <Skeleton className="w-full h-20" />
+      </div>
+
+      <Skeleton className="w-10 h-5" />
+      <Skeleton className="w-10 h-5" />
+      <Skeleton className="w-10 h-5" />
+    </div>
   );
 }
