@@ -68,7 +68,7 @@ export default function UserDashboard({ params }: PageProps) {
 
       <DashboardHeading heading="Dashboard" text="Manage and view your activity" />
       <div className="gap-5 grid grid-cols-1 md:grid-cols-2">
-        <AppHeader redirectId={params.userId} title="Notifications" type="user" />
+        <AppHeader redirectId={params.userId} title="Dashboard" type="user" />
         <NearestPharmaciesCard
           nearestPharmacies={nearestPharmacies}
           isLoading={isPharmaciesLoading}

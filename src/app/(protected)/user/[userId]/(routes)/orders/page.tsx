@@ -43,16 +43,18 @@ const SuspensePage = ({ searchParams }: PageProps) => {
 
 const UserOrdersPage = ({ searchParams, params }: PageProps & { params: { userId: string } }) => {
   return (
-    <div className="space-y-5">
-      <DashboardHeading heading="Orders" text="Manage your orders from here" />
-
+    <>
       <AppHeader redirectId={params.userId} title="Orders" type="user" />
-      <ErrorBoundary>
-        <Suspense fallback={<TableSkeleton />}>
-          <SuspensePage searchParams={searchParams} />
-        </Suspense>
-      </ErrorBoundary>
-    </div>
+      <div className="space-y-5">
+        <DashboardHeading heading="Orders" text="Manage your orders from here" />
+
+        <ErrorBoundary>
+          <Suspense fallback={<TableSkeleton />}>
+            <SuspensePage searchParams={searchParams} />
+          </Suspense>
+        </ErrorBoundary>
+      </div>
+    </>
   );
 };
 

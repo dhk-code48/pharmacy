@@ -8,6 +8,10 @@ import { ThemeProvider } from "next-themes";
 import { SessionProvider } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { fontGeist, fontHeading, fontSans, fontUrban } from "@/assets/fonts";
+import dynamic from "next/dynamic";
+
+const SpeedInsights = dynamic(() => import("@vercel/speed-insights/next").then((mod) => mod.SpeedInsights), { ssr: false });
+const Analytics = dynamic(() => import("@vercel/analytics/react").then((mod) => mod.Analytics), { ssr: false });
 
 export const metadata: Metadata = {
   title: "Alpha Traders",
@@ -38,6 +42,8 @@ export default function RootLayout({
             </ThemeProvider>
           </GeoLocationProvider>
         </SessionProvider>
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
