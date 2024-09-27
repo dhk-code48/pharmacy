@@ -5,8 +5,6 @@ import getPharmacy from "@/actions/pharmacy/getPharmacy";
 import AppHeader from "@/components/layout/AppHeader";
 import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
 
-export const runtime = "nodejs";
-
 const SuspensePage = ({ params }: { params: { slug: string } }) => {
   const pharmacy = use(getPharmacy({ slug: params.slug, user: true }));
   return <SettingsClient params={params} pharmacy={pharmacy} />;

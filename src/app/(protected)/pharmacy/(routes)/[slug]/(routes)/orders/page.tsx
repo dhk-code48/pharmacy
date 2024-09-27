@@ -8,8 +8,6 @@ import AppHeader from "@/components/layout/AppHeader";
 import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
 import TableSkeleton from "@/components/shared/TableSkeleton";
 
-export const runtime = "nodejs";
-
 const searchParamsSchema = z.object({
   page: z.coerce.number().default(1),
   per_page: z.coerce.number().default(10),
