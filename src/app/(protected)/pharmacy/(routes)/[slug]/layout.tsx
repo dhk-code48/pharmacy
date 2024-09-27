@@ -55,7 +55,7 @@ const PharmacyLayout = async ({ children, params }: UserLayoutProps) => {
             <>{isVerified ? children : <PharmacyNotVerified />}</>
           </MaxWidthWrapper>
         </main>
-      </div>{" "}
+      </div>
       <BottomTab links={PHARMACY_DASHBOARD_BOTTOM_TAB} prefix={`/pharmacy/${params.slug}`} />
     </div>
   );

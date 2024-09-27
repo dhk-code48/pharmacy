@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Icons } from "../shared/Icons";
 
 const ratingVariants = {
   default: {
@@ -33,7 +33,7 @@ const StarInput = ({
   totalStars = 5,
   size = 20,
   fill = true,
-  Icon = <Star />,
+  Icon = <Icons.star />,
   variant = "default",
   onChange,
   disabled = false, // Default is not disabled

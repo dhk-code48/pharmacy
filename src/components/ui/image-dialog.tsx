@@ -5,8 +5,8 @@ import { motion, AnimatePresence, MotionConfig, Transition, Variant } from "fram
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import useClickOutside from "@/hooks/useClickOutside";
-import { XIcon } from "lucide-react";
 import { CldImage, CldImageProps } from "next-cloudinary";
+import { Icons } from "../shared/Icons";
 
 interface DialogContextType {
   isOpen: boolean;
@@ -316,7 +316,7 @@ function DialogClose({ children, className, variants }: DialogCloseProps) {
       exit="exit"
       variants={variants}
     >
-      {children || <XIcon size={24} />}
+      {children || <Icons.close size={24} />}
     </motion.button>
   );
 }

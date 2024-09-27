@@ -1,6 +1,8 @@
-export { auth as default } from "@/auth";
+import NextAuth from "next-auth";
+import { authConfig } from "./authConfig";
 
-// Matcher configuration
+export const { auth: middleware } = NextAuth(authConfig);
+
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

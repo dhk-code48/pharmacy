@@ -11,7 +11,6 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import ImageUpload from "@/components/forms/ImageUpload";
 import MapInput from "../MapInput";
 import { useQuery } from "@tanstack/react-query";
@@ -20,6 +19,7 @@ import createPrescription from "@/actions/user/createPrescription";
 import { toast } from "sonner";
 import { sideCannonConfetti } from "@/lib/utils";
 import { Location, NearestPharmacy } from "@/types";
+import { Icons } from "@/components/shared/Icons";
 
 const PrescriptionUploadSchema = z.object({
   prescription: z.array(z.string()).min(1, "At least one prescription image is required"),
@@ -283,12 +283,12 @@ export default function PrescriptionUploadCard({ nearestPharmacies, location, on
               <CardFooter className="flex justify-between">
                 {step > 0 && (
                   <Button type="button" variant="outline" onClick={prevStep}>
-                    <ChevronLeft className="mr-2 h-4 w-4" /> Previous
+                    <Icons.chevronLeft className="mr-2 h-4 w-4" /> Previous
                   </Button>
                 )}
                 {step < maxSteps && (
                   <Button type="button" onClick={nextStep}>
-                    Next <ChevronRight className="ml-2 h-4 w-4" />
+                    Next <Icons.chevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 )}
                 {step === maxSteps && (

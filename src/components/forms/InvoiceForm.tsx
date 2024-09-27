@@ -3,7 +3,7 @@
 import React, { FC, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader, X } from "lucide-react";
+
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -11,10 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
-import { Media, Pharmacy, Prescription } from "@prisma/client";
+import { Media, Prescription } from "@prisma/client";
 import PrescriptionImages from "../layout/PrescriptionImages";
 import createInvoice from "@/actions/pharmacy/createInvoice";
 import { cn } from "@/lib/utils";
+import { Icons } from "../shared/Icons";
 
 export const InvoiceFormSchema = z.object({
   medicines: z.array(
@@ -154,7 +155,7 @@ const InvoiceForm: FC<FormProps> = ({ prescription, triggerClassName, pharmacyId
                   />
 
                   <Button type="button" size="icon" className="h-8 w-8" variant="ghost" onClick={() => remove(index)} disabled={loading}>
-                    <X size={16} />
+                    <Icons.close size={16} />
                   </Button>
                 </li>
               ))}
@@ -167,7 +168,7 @@ const InvoiceForm: FC<FormProps> = ({ prescription, triggerClassName, pharmacyId
             </div>
 
             <Button type="submit" size="sm" disabled={loading}>
-              {loading ? <Loader className="animate-spin" size={20} /> : "Create Invoice"}
+              {loading ? <Icons.spinner className="animate-spin" size={20} /> : "Create Invoice"}
             </Button>
           </form>
         </Form>

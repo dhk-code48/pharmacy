@@ -6,7 +6,6 @@ import InvoiceDetails from "./InvoiceDetails";
 import OrderProgress from "./OrderProgress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { FileText } from "lucide-react";
 import { UserOrder } from "@/types";
 import OrderPrescription from "./OrderPrescription";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

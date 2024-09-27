@@ -3,12 +3,10 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Package, ShoppingCart, Users, DollarSign, TrendingUp, TrendingDown, AlertCircle } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import { getDashboardAnalytics } from "@/actions/superadmin/dashboardAnalytics";
 import { DashboardData, DashboardSummaryStats } from "@/types";
 import DashboardCard from "@/components/sections/dashboard/DashboardCard";
-import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
 import { getDashboardSummary } from "@/actions/superadmin/dashboardSummary";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];

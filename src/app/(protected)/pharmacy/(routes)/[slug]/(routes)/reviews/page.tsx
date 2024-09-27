@@ -23,6 +23,8 @@ type PageProps = {
   };
 };
 
+export const runtime = "nodejs";
+
 const SuspensePage = ({ searchParams, params }: PageProps) => {
   const search = searchParamsSchema.parse(searchParams);
   console.log(params.slug);

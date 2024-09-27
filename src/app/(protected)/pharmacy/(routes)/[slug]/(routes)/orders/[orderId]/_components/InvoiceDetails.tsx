@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff } from "lucide-react";
 import { Invoice } from "@prisma/client";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Icons } from "@/components/shared/Icons";
 
 /**
  * InvoiceDetails Component
@@ -36,7 +36,7 @@ const InvoiceDetails = ({ invoice }: { invoice: Invoice }) => {
         <div className="flex justify-between items-center">
           <h4 className="font-semibold">Medicines</h4>
           <Button variant="outline" size="sm" onClick={() => setShowPrescription(!showPrescription)}>
-            {showPrescription ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
+            {showPrescription ? <Icons.eyeOff className="mr-2 h-4 w-4" /> : <Icons.eye className="mr-2 h-4 w-4" />}
             {showPrescription ? "Hide Prescription" : "Show Prescription"}
           </Button>
         </div>

@@ -3,12 +3,11 @@ import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Printer } from "lucide-react";
-import { PharmacyAddress, Invoice, Medicine, Order, Pharmacy, User } from "@prisma/client";
+import { PharmacyAddress, Invoice, Medicine, Order, Pharmacy } from "@prisma/client";
 import { formatDate } from "@/lib/format";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import { useSession } from "next-auth/react";
+import { Icons } from "./Icons";
 
 export default function InvoiceUi({
   invoice,
@@ -152,7 +151,7 @@ export default function InvoiceUi({
         `}</style>
         <div className="w-full max-w-4xl mx-auto p-8 relative overflow-x-auto">
           <Button onClick={handlePrint} className="absolute top-4 right-4 z-10 print:hidden">
-            <Printer className="mr-2 h-4 w-4" /> Print Invoice
+            <Icons.printer className="mr-2 h-4 w-4" /> Print Invoice
           </Button>
           <div className="invoice-container">
             <Card className="w-full shadow-lg print:shadow-none" ref={invoiceRef}>

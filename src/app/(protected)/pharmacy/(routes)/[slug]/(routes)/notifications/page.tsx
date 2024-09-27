@@ -2,9 +2,8 @@ import { auth } from "@/auth";
 import AppHeader from "@/components/layout/AppHeader";
 import { Notifications } from "@/components/layout/NotificationsDialog";
 import { DashboardHeading } from "@/components/sections/dashboard/DashboardHeading";
-import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
 import { redirect } from "next/navigation";
-import React, { use } from "react";
+import React from "react";
 
 const NotificationPage = async () => {
   const session = await auth();

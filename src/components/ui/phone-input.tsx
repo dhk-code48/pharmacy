@@ -13,11 +13,11 @@ import parsePhoneNumberFromString, {
   type CountryCode,
   type NumberType,
 } from "libphonenumber-js";
-import { Check, ChevronsUpDown } from "lucide-react";
 import * as React from "react";
 import { countries } from "@/config/conuntries";
 import { useStateHistory } from "@/hooks/useStateHistory";
 import Image from "next/image";
+import { Icons } from "../shared/Icons";
 
 export type Country = (typeof countries)[number];
 
@@ -130,7 +130,7 @@ export function PhoneInput({ value: valueProp, defaultCountry = "NP", className,
         <PopoverTrigger asChild>
           <Button variant="outline" role="combobox" aria-expanded={openCommand} className="w-max items-center justify-between whitespace-nowrap">
             {selectedCountry?.name ? <span className="relative top-0.5">{selectedCountry.emoji}</span> : "Select country"}
-            <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
+            <Icons.selector className="ml-2 size-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="p-0 w-max" align="start">
@@ -155,7 +155,7 @@ export function PhoneInput({ value: valueProp, defaultCountry = "NP", className,
                           setOpenCommand(false);
                         }}
                       >
-                        <Check className={cn("mr-2 size-4", countryCode === country.iso2 ? "opacity-100" : "opacity-0")} />
+                        <Icons.check className={cn("mr-2 size-4", countryCode === country.iso2 ? "opacity-100" : "opacity-0")} />
 
                         <Image
                           src={`/icons/${country.iso2.toLowerCase()}.svg`}

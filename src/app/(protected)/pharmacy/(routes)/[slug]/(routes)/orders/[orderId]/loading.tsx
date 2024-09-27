@@ -1,7 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "lucide-react";
-import OrderProgress from "./_components/OrderProgress";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 
 export default function PharmacyOrderLoading() {
   return (

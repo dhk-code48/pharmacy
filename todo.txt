@@ -1,11 +1,15 @@
-# Optimize Database Queries (server action)
-    - prisma.$transaction
 
+├ ƒ /pharmacy/[slug]                     2.42 kB         306 kB
+├ ƒ /pharmacy/[slug]/notifications       1.05 kB         194 kB
+├ ƒ /pharmacy/[slug]/orders              2.58 kB         235 kB
+├ ƒ /pharmacy/[slug]/orders/[orderId]    3.71 kB         369 kB
+├ ƒ /pharmacy/[slug]/reviews             3.06 kB         218 kB
+├ ƒ /pharmacy/[slug]/settings            4.25 kB         259 kB
+├ ƒ /pharmacy/create                     8.87 kB         231 kB
 
-# Optimize prisma schema (add indexes)
-    - use proper optimized indexes
-
-# Optimize Revalidation
-    - use proper revalidation path
-
-#
+├ ƒ /pharmacy/[slug]                     2.42 kB         306 kB
+├ ƒ /pharmacy/[slug]/notifications       1.05 kB         194 kB
+├ ƒ /pharmacy/[slug]/orders              2.58 kB         235 kB
+├ ƒ /pharmacy/[slug]/orders/[orderId]    3.71 kB         369 kB
+├ ƒ /pharmacy/[slug]/reviews             3.06 kB         218 kB
+├ ƒ /pharmacy/[slug]/settings            5.85 kB         259 kB

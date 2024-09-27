@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { redis } from "@/lib/redis";
 
 export const getUserByEmail = async (email: string) => {
   try {
@@ -26,7 +27,18 @@ export const getUserByEmail = async (email: string) => {
 };
 
 export const getUserById = async (id: string) => {
+  const cacheKey = `user:${id}`;
+
   try {
+    // Getting user data from redis
+    const cachedUser = await redis.get(cacheKey);
+
+    // Validating if user data is cached in redis or not
+    if (cachedUser) {
+      return JSON.parse(cachedUser);
+    }
+
+    // Querying user data from prisma if it is not cached in redis
     const user = await prisma.user.findUnique({
       where: { id },
       select: {
@@ -43,8 +55,14 @@ export const getUserById = async (id: string) => {
       },
     });
 
-    return user;
-  } catch {
+    if (user) {
+      // Caching user to redis
+      await redis.set(cacheKey, JSON.stringify(user), "EX", 3600 * 24 * 2); // cache for 2 days
+      return user;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching user:", error);
     return null;
   }
 };

@@ -7,7 +7,7 @@ import { PaginatedPharmacyOrder } from "@/types";
 import dynamic from "next/dynamic";
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontalIcon } from "lucide-react";
+import { Icons } from "@/components/shared/Icons";
 
 const CellAction = dynamic(() => import("./cell-action"), {
   ssr: false,
@@ -87,7 +87,7 @@ export const columns: ColumnDef<PaginatedPharmacyOrder>[] = [
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
-              <MoreHorizontalIcon className="h-4 w-4" />
+              <Icons.moreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <CellAction order={row.original} />

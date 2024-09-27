@@ -1,12 +1,9 @@
 "use client";
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { MoreHorizontalIcon } from "lucide-react";
+import { DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import UserInfo from "@/components/layout/UserInfo";
 import { PaginatedReview } from "@/types";
-import { useRouter } from "next/navigation";
 
 export default function CellAction({ order: review }: { order: PaginatedReview }) {
   return (
